@@ -1,0 +1,158 @@
+ORG 0x000
+
+
+START:
+	ld n
+	st copy_n
+	st fact_res
+	dec
+	st n
+	call FACT
+	ld fact_res
+	call SIMPL_DEL
+	jump ANS
+	hlt
+
+
+FACT:
+	ld fact_res
+	st mult_1
+	ld costil
+	inc
+	st costil
+	st mult_2
+	call MULTIPLY
+	st fact_res
+	cla
+	st mult_res
+	loop n
+	jump FACT
+	ret
+
+
+MULTIPLY:
+	ld mult_res
+	add mult_1
+	st mult_res
+	ld mult_2
+	dec
+	st mult_2
+	bpl MULTIPLY
+	ld mult_res
+	sub mult_1
+	st mult_res
+	ret
+	
+
+DIVISION:
+	ld div_res;
+	inc
+	st div_res
+	ld div_1
+	sub div_2
+	st div_1
+	bpl DIVISION
+	ld div_res
+	ret
+
+SIMPL_DEL:
+	call SIMPLE_2
+	call SIMPLE_3
+	call SIMPLE_5
+	call SIMPLE_7
+	ret
+
+SIMPLE_2:
+	ld const_2
+	st div_2
+	ld copy_n
+	st div_1
+	call DIVISION
+	ld div_res
+	st col_2
+	ld const_1
+	st div_res
+	ld copy_n
+	sub const_4
+	bpl HELP_SIMPL_2
+	ret
+
+HELP_SIMPL_2:
+	ld col_2
+	inc
+	st col_2
+	ret
+
+
+SIMPLE_3:
+	ld const_3
+	st div_2
+	ld copy_n
+	st div_1
+	call DIVISION
+	ld div_res
+	st col_3
+	ld const_1
+	st div_res
+	ret
+
+SIMPLE_5:
+	ld copy_n
+	sub const_5
+	bpl H5
+	ret
+
+H5:
+	ld col_5
+	inc
+	st col_5
+	ret
+
+SIMPLE_7:
+	ld copy_n
+	sub const_7
+	bpl H7
+	ret
+
+H7:
+	ld col_7
+	inc
+	st col_7
+	ret
+
+div_1: word 0x000
+div_2: word 0x000
+help_div: word 0x000
+div_res: word 0xFFFF;
+temp_div: word 0xFFFF;
+
+
+n: word 0x001 ; это входное число
+copy_n: word 0x005
+mult_1: word 0x00C; это операнды умножения
+mult_2: word 0x001;
+temp_mult: word 0x000; временное значение
+mult_res: word 0x000; пусть будет
+
+costil: word 0x000;
+
+const_0: word 0x000;
+const_2: word 0x002;
+const_3: word 0x003;
+const_4: word 0x004;
+const_5: word 0x005;
+const_6: word 0x006;
+const_7: word 0x007;
+const_1: word 0xffff ; это -1
+col_2_hch: word 0x002;
+
+temp_fact: word 0x000;
+
+ANS:
+	hlt
+
+fact_res: word 0x000;
+col_2: word 0x000;
+col_3: word 0x000;
+col_5: word 0x000;
+col_7: word 0x000;

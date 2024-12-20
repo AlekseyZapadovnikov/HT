@@ -1,0 +1,35 @@
+ORG 0x060
+A: WORD 0x307D ;0x060
+B: WORD 0x307D ;0x061
+LD $E ;AC = E
+OR $I ;AC &= I
+ST $F ;F = AC 
+CLA
+SUB $H ;AC = AC-H
+ADD $F ;AC = AC + F
+ST $F ;F = AC
+LD $G ;AC = G
+OR $F ;AC & F
+ST $F ;F = AC
+CLA
+ADD $D ;AC = D
+ADD $F ;AC + F
+ST $F ; F = AC
+CLA
+NOT ; AC = 0xFFFF
+AND $C ;AC = C
+OR $F ;AC | F
+ST $F ;F = AC
+CLA
+ADD $B ;AC = B
+SUB $F ;AC = AC - F
+CLA
+ST $A ;A = B-F
+HLT
+C: WORD 0x060 ;0x07A
+D: WORD 0x307D ;0x07B
+E: WORD F ;0x07C
+F: WORD 0x060 ;0x07D
+G: WORD 0x207A ;0x07E
+H: WORD F ;0x07F
+I: WORD 0x207A ;0x080
