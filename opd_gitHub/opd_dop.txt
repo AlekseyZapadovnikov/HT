@@ -7,6 +7,7 @@ START:
 	st fact_res
 	dec
 	st n
+	bmi ANS_0
 	call FACT
 	ld fact_res
 	call SIMPL_DEL
@@ -127,7 +128,7 @@ div_res: word 0xFFFF;
 temp_div: word 0xFFFF;
 
 
-n: word 0x001 ; это входное число
+n: word 0x007 ; это входное число
 copy_n: word 0x005
 mult_1: word 0x00C; это операнды умножения
 mult_2: word 0x001;
@@ -156,3 +157,15 @@ col_2: word 0x000;
 col_3: word 0x000;
 col_5: word 0x000;
 col_7: word 0x000;
+
+ANS_0:
+	e: word 0x0000;
+	f: word 0x0000;
+	g: word 0x0000;
+	h: word 0x0000;
+	r: word 0x0000;
+	a: word 0x0001;
+	c: word 0x0000;
+	b: word 0x0000;
+	d: word 0x0000;
+	hlt
