@@ -10,6 +10,16 @@ public class Coordinates implements Validate {
         this.y = y;
     }
 
+    public Coordinates(){}
+
+    public void setX(Float x) {
+        this.x = x;
+    }
+
+    public void setY(float y) {
+        this.y = y;
+    }
+
     @Override
     public boolean validate() {
         return (x != null);
