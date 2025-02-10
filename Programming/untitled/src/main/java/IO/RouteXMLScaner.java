@@ -31,7 +31,8 @@ public class RouteXMLScaner {
         scipUselessLine(1);
         while (scan.hasNextLine()) {
             scipUselessLine(1);
-            String line = scan.nextLine();
+            if (scan.hasNextLine()){
+                String line = scan.nextLine();
             if (!line.equals("</route>")){
                 long curId = Long.parseLong(getStrBetweenTags(scan.nextLine()));
                 String curRouteName = getStrBetweenTags(scan.nextLine());
@@ -47,6 +48,7 @@ public class RouteXMLScaner {
                     routes.add(new Route(curId, curRouteName, curCoords, from, dis));
                 }
                 scipUselessLine(1);
+            }
             }
         }scan.close();
         return routes;
