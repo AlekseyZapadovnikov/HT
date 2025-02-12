@@ -1,0 +1,87 @@
+<routes>
+    <route>
+        <id>1</id>
+        <name>Route A</name>
+        <coordinates>
+            <x>10.5</x>
+            <y>20.0</y>
+        </coordinates>
+        <from>
+            <x>1.2</x>
+            <y>10</y>
+            <name>Start A</name>
+        </from>
+        <distance>10</distance>
+        <to>
+            <x>2.3</x>
+            <y>20</y>
+            <name>End A</name>
+        </to>
+    </route>
+    <route>
+        <id>2</id>
+        <name>Route B</name>
+        <coordinates>
+            <x>5.0</x>
+            <y>5.0</y>
+        </coordinates>
+        <from>
+            <x>4.5</x>
+            <y>12</y>
+            <name>Start B</name>
+        </from>
+        <distance>50</distance>
+        <to>
+            <x>8.0</x>
+            <y>15</y>
+            <name>End B</name>
+        </to>
+    </route>
+    <route>
+        <id>3</id>
+        <name>Route C</name>
+        <coordinates>
+            <x>15.0</x>
+            <y>-7.0</y>
+        </coordinates>
+        <from>
+            <x>3.0</x>
+            <y>9</y>
+            <name>Start C</name>
+        </from>
+        <distance>99</distance>
+    </route>
+    <route>
+        <id>4</id>
+        <name>Route D</name>
+        <coordinates>
+            <x>3.2</x>
+            <y>0.0</y>
+        </coordinates>
+        <from>
+            <x>0.5</x>
+            <y>1</y>
+            <name>Start D</name>
+        </from>
+        <distance>2</distance>
+    </route>
+    <route>
+        <id>5</id>
+        <name>Route E</name>
+        <coordinates>
+            <x>99.9</x>
+            <y>50.0</y>
+        </coordinates>
+        <from>
+            <x>22.2</x>
+            <y>44</y>
+            <name>Start E</name>
+        </from>
+        <distance>100</distance>
+        <to>
+            <x>55.5</x>
+            <y>66</y>
+            <name>End E</name>
+        </to>
+    </route>
+</routes>

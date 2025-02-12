@@ -45,6 +45,34 @@ public class Route implements Validate {
         return true;
     }
 
+    public long getId() {
+        return id;
+    }
+
+    public long getDistance() {
+        return distance;
+    }
+
+    public Location getTo() {
+        return to;
+    }
+
+    public Location getFrom() {
+        return from;
+    }
+
+    public LocalDate getCreationDate() {
+        return creationDate;
+    }
+
+    public Coordinates getCoordinates() {
+        return coordinates;
+    }
+
+    public String getName() {
+        return name;
+    }
+
     public void setId(long id) {
         this.id = id;
     }
