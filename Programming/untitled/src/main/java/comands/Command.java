@@ -12,6 +12,8 @@ public abstract class Command {
         this.description = description;
     }
 
+    public abstract void execute(String[] args);
+
     /**
      * @return Название и использование команды.
      */

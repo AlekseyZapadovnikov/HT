@@ -3,122 +3,163 @@ package IO;
 import itemsInArrea.Coordinates;
 import itemsInArrea.Location;
 import itemsInArrea.Route;
+import managers.ColectionManager;
 
 import java.util.NoSuchElementException;
+import java.util.Scanner;
 
 public class ConsoleQuest {
     public static class AskBreak extends Exception {
     }
 
-    public static Route askRoute(Console console, int id) throws AskBreak {
+    // Можно завести один общий Scanner на всё приложение, или
+    // создавать новый в каждом методе — на ваше усмотрение.
+    private static final Scanner scanner = new Scanner(System.in);
+
+    public static Route askRoute(ColectionManager colectionManager, long id) throws AskBreak {
         try {
+            System.out.println("pls, enter information about new Route");
+
+            // Читаем name
             String name;
             while (true) {
-                console.print("name: ");
-                name = console.readln().trim();
-                if (name.equals("exit")) throw new AskBreak();
-                if (!name.isEmpty()) break;
+                System.out.print("name: ");
+                String line = scanner.nextLine().trim();
+                if (line.equals("exit")) throw new AskBreak();
+                if (!line.isEmpty()) {
+                    name = line;
+                    break;
+                }
             }
-            var coordinates = askCoordinates(console);
-            console.print("Enter 'to' Location");
-            var locationTo = askLocation(console);
+
+            // Читаем coordinates
+            Coordinates coordinates = askCoordinates();
+
+            System.out.print("Enter 'to' Location: ");
+            Location locationTo = askLocation();
+
+            // Читаем distance
             long distance;
             while (true) {
-                console.print("distance please: ");
-                var line = console.readln().trim();
+                System.out.print("distance please: ");
+                String line = scanner.nextLine().trim();
                 if (line.equals("exit")) throw new AskBreak();
                 try {
                     distance = Long.parseLong(line);
                     break;
                 } catch (NumberFormatException e) {
-                    console.printError("Invalid number format, try again.");
+                    System.err.println("Invalid number format, try again.");
                 }
             }
-            var locationFrom = askLocation(console);
+
+            // Читаем locationFrom
+            Location locationFrom = askLocation();
+
+            // Если id == -1, значит нужно сгенерировать свободный id
+            if (id == -1){
+                id = colectionManager.getFreeId();
+            }
+
             return new Route(id, name, coordinates, locationTo, distance, locationFrom);
+
         } catch (NoSuchElementException | IllegalStateException e) {
-            console.printError("Reading error");
+            System.err.println("Reading error");
             return null;
         }
     }
 
-    public static Location askLocation(Console console) throws AskBreak {
+    public static Location askLocation() throws AskBreak {
         try {
+            // Читаем X
             Float x;
             while (true) {
-                console.print("coordinates.x: ");
-                var line = console.readln().trim();
+                System.out.print("coordinates.x: ");
+                String line = scanner.nextLine().trim();
                 if (line.equals("exit")) throw new AskBreak();
                 if (!line.isEmpty()) {
                     try {
                         x = Float.parseFloat(line);
                         break;
                     } catch (NumberFormatException e) {
-                        console.printError("Invalid number format, try again.");
+                        System.err.println("Invalid number format, try again.");
                     }
                 }
             }
+
+            // Читаем Y
             long y;
             while (true) {
-                console.print("coordinates.y: ");
-                var line = console.readln().trim();
+                System.out.print("coordinates.y: ");
+                String line = scanner.nextLine().trim();
                 if (line.equals("exit")) throw new AskBreak();
-                if (!line.equals("")) {
+                if (!line.isEmpty()) {
                     try {
                         y = Long.parseLong(line);
                         break;
                     } catch (NumberFormatException e) {
-                        console.printError("Invalid number format, try again.");
+                        System.err.println("Invalid number format, try again.");
                     }
                 }
             }
+
+            // Читаем name
             String name;
             while (true) {
-                console.print("name: ");
-                name = console.readln().trim();
-                if (name.equals("exit")) throw new AskBreak();
-                if (!name.isEmpty()) break;
+                System.out.print("name: ");
+                String line = scanner.nextLine().trim();
+                if (line.equals("exit")) throw new AskBreak();
+                if (!line.isEmpty()) {
+                    name = line;
+                    break;
+                }
             }
+
             return new Location(x, y, name);
+
         } catch (NoSuchElementException | IllegalStateException e) {
-            console.printError("Reading error");
+            System.err.println("Reading error");
             return null;
         }
     }
 
-    public static Coordinates askCoordinates(Console console) throws AskBreak {
+    public static Coordinates askCoordinates() throws AskBreak {
         try {
+            // Читаем x
             Float x;
             while (true) {
-                console.print("coordinates.x: ");
-                var line = console.readln().trim();
+                System.out.print("coordinates.x: ");
+                String line = scanner.nextLine().trim();
                 if (line.equals("exit")) throw new AskBreak();
                 if (!line.isEmpty()) {
                     try {
                         x = Float.parseFloat(line);
                         break;
                     } catch (NumberFormatException e) {
-                        console.printError("Invalid number format, try again.");
+                        System.err.println("Invalid number format, try again.");
                     }
                 }
             }
+
+            // Читаем y
             float y;
             while (true) {
-                console.print("coordinates.y: ");
-                var line = console.readln().trim();
+                System.out.print("coordinates.y: ");
+                String line = scanner.nextLine().trim();
                 if (line.equals("exit")) throw new AskBreak();
-                if (!line.equals("")) {
+                if (!line.isEmpty()) {
                     try {
                         y = Float.parseFloat(line);
                         break;
                     } catch (NumberFormatException e) {
-                        console.printError("Invalid number format, try again.");
+                        System.err.println("Invalid number format, try again.");
                     }
                 }
             }
+
             return new Coordinates(x, y);
+
         } catch (NoSuchElementException | IllegalStateException e) {
-            console.printError("Reading error");
+            System.err.println("Reading error");
             return null;
         }
     }

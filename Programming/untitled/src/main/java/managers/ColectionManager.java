@@ -105,6 +105,11 @@ public class ColectionManager {
         return true;
     }
 
+    public void clear(){
+        routes.clear();
+        routesMap.clear();
+    }
+
     /**
      * Фиксирует изменения коллекции
      */
@@ -125,11 +130,12 @@ public class ColectionManager {
     public String toString() {
         if (routes.isEmpty()) return "Коллекция пуста!";
 
-        StringBuilder info = new StringBuilder();
-        for (var Route : routes) {
-            info.append(Route+"\n\n");
-        }
-        return info.toString().trim();
+        String info = "Время инициализации: " + lastInitTime.toString() + '\n' +
+                "Врема последнего изменения: " + lastUpdateTime.toString() + '\n' +
+                "Тип объектов: Routes" + '\n' +
+                "Количество элементов" + routes.size();
+
+        return info;
     }
 }
 
