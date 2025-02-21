@@ -1,6 +1,5 @@
 package comands;
 
-import IO.Console;
 import managers.ColectionManager;
 import managers.CommandManager;
 

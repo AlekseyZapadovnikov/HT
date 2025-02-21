@@ -1,6 +1,5 @@
 package comands;
 
-import IO.Console;
 import itemsInArrea.Route;
 import managers.ColectionManager;
 

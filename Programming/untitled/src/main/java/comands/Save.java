@@ -17,10 +17,11 @@ public class Save extends Command{
 
     @Override
     public void execute(String[] args) {
-        System.out.println("Данный будут сохранены в файл Saves.xml");
+        System.out.println("Данные будут сохранены в файл Saves.xml");
 
         try {
             saver.writeRoutes(colectionManager.getroutes());
+            System.out.println("Данные успешно сохранены");
         } catch (IOException e) {
             System.out.println("Возникли проблемы с записью в файл");
             throw new RuntimeException(e);

@@ -32,6 +32,15 @@ public class Location implements Validate {
         return this.x != null && !this.name.isEmpty();
     }
 
+    @Override
+    public String toString() {
+        return "Location{" +
+                "x=" + x +
+                ", y=" + y +
+                ", name='" + name + '\'' +
+                '}';
+    }
+
     public Float getX() {
         return x;
     }

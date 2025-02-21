@@ -10,4 +10,8 @@ public class Exit extends Command{
     public void execute(String[] args) {
         System.exit(0);
     }
+
+    public void execute(){
+        System.exit(0);
+    }
 }

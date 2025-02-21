@@ -40,6 +40,14 @@ public class Coordinates implements Validate {
         return Objects.hash(x, y);
     }
 
+    @Override
+    public String toString() {
+        return "Coordinates{" +
+                "x=" + x +
+                ", y=" + y +
+                '}';
+    }
+
     public Float getX() {
         return x;
     }
@@ -48,8 +56,4 @@ public class Coordinates implements Validate {
         return y;
     }
 
-    @Override
-    public String toString(){
-        return "x = " + getX().toString() + "y = " + getY();
-    }
 }

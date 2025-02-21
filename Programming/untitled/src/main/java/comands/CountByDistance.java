@@ -13,13 +13,18 @@ public class CountByDistance extends Command {
 
     @Override
     public void execute(String[] args) {
-        long dist = Long.parseLong(args[args.length]);
-        long counter = 0L;
-        for (Route route : colectionManager.getroutes()){
-            if (route.getDistance() == dist){
-                counter++;
+        try {
+            long dist = Long.parseLong(args[args.length]);
+
+            long counter = 0L;
+            for (Route route : colectionManager.getroutes()) {
+                if (route.getDistance() == dist) {
+                    counter++;
+                }
             }
+            System.out.println(counter);
+        }catch (IndexOutOfBoundsException e){
+            System.out.println("you haven`t enter parameter 'distance'");
         }
-        System.out.println(counter);
     }
 }

@@ -1,5 +1,6 @@
 package IO;
 
+import comands.Exit;
 import itemsInArrea.Coordinates;
 import itemsInArrea.Location;
 import itemsInArrea.Route;
@@ -9,14 +10,11 @@ import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class ConsoleQuest {
-    public static class AskBreak extends Exception {
-    }
+    public static Exit exit = new Exit("exit", "виход");
 
-    // Можно завести один общий Scanner на всё приложение, или
-    // создавать новый в каждом методе — на ваше усмотрение.
     private static final Scanner scanner = new Scanner(System.in);
 
-    public static Route askRoute(ColectionManager colectionManager, long id) throws AskBreak {
+    public static Route askRoute(ColectionManager colectionManager, long id) {
         try {
             System.out.println("pls, enter information about new Route");
 
@@ -25,7 +23,7 @@ public class ConsoleQuest {
             while (true) {
                 System.out.print("name: ");
                 String line = scanner.nextLine().trim();
-                if (line.equals("exit")) throw new AskBreak();
+                if (line.equals("exit")) exit.execute();
                 if (!line.isEmpty()) {
                     name = line;
                     break;
@@ -43,7 +41,7 @@ public class ConsoleQuest {
             while (true) {
                 System.out.print("distance please: ");
                 String line = scanner.nextLine().trim();
-                if (line.equals("exit")) throw new AskBreak();
+                if (line.equals("exit")) exit.execute();
                 try {
                     distance = Long.parseLong(line);
                     break;
@@ -53,6 +51,7 @@ public class ConsoleQuest {
             }
 
             // Читаем locationFrom
+            System.out.println("enter info about 'from' Location");
             Location locationFrom = askLocation();
 
             // Если id == -1, значит нужно сгенерировать свободный id
@@ -68,14 +67,14 @@ public class ConsoleQuest {
         }
     }
 
-    public static Location askLocation() throws AskBreak {
+    public static Location askLocation() {
         try {
             // Читаем X
             Float x;
             while (true) {
                 System.out.print("coordinates.x: ");
                 String line = scanner.nextLine().trim();
-                if (line.equals("exit")) throw new AskBreak();
+                if (line.equals("exit")) exit.execute();
                 if (!line.isEmpty()) {
                     try {
                         x = Float.parseFloat(line);
@@ -91,7 +90,7 @@ public class ConsoleQuest {
             while (true) {
                 System.out.print("coordinates.y: ");
                 String line = scanner.nextLine().trim();
-                if (line.equals("exit")) throw new AskBreak();
+                if (line.equals("exit")) exit.execute();
                 if (!line.isEmpty()) {
                     try {
                         y = Long.parseLong(line);
@@ -107,7 +106,7 @@ public class ConsoleQuest {
             while (true) {
                 System.out.print("name: ");
                 String line = scanner.nextLine().trim();
-                if (line.equals("exit")) throw new AskBreak();
+                if (line.equals("exit")) exit.execute();
                 if (!line.isEmpty()) {
                     name = line;
                     break;
@@ -122,14 +121,15 @@ public class ConsoleQuest {
         }
     }
 
-    public static Coordinates askCoordinates() throws AskBreak {
+    public static Coordinates askCoordinates() {
         try {
             // Читаем x
+            System.out.println("enter info about coordination");
             Float x;
             while (true) {
                 System.out.print("coordinates.x: ");
                 String line = scanner.nextLine().trim();
-                if (line.equals("exit")) throw new AskBreak();
+                if (line.equals("exit")) exit.execute();
                 if (!line.isEmpty()) {
                     try {
                         x = Float.parseFloat(line);
@@ -145,7 +145,7 @@ public class ConsoleQuest {
             while (true) {
                 System.out.print("coordinates.y: ");
                 String line = scanner.nextLine().trim();
-                if (line.equals("exit")) throw new AskBreak();
+                if (line.equals("exit")) exit.execute();
                 if (!line.isEmpty()) {
                     try {
                         y = Float.parseFloat(line);

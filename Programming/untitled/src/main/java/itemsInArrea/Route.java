@@ -28,7 +28,7 @@ public class Route implements Validate, Comparable<Route> {
         this.id = id;
         this.distance = distance;
         this.from = from;
-        this.creationDate = creationDate;
+        this.creationDate = LocalDate.now();
         this.coordinates = coordinates;
         this.name = name;
     }
@@ -105,5 +105,18 @@ public class Route implements Validate, Comparable<Route> {
     public int compareTo(Route other) {
         // Сравниваем по полю id
         return Long.compare(this.id, other.id);
+    }
+
+    @Override
+    public String toString() {
+        return "Route{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", coordinates=" + coordinates +
+                ", creationDate=" + creationDate +
+                ", from=" + from +
+                ", to=" + to +
+                ", distance=" + distance +
+                '}';
     }
 }

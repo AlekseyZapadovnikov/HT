@@ -43,9 +43,6 @@ public abstract class Command {
 
     @Override
     public String toString() {
-        return "Command{" +
-                "name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                '}';
+        return name + " : " + description;
     }
 }

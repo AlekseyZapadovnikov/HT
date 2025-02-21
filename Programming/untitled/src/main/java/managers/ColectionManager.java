@@ -116,6 +116,9 @@ public class ColectionManager {
     public void update() {
         Collections.sort(routes);
         lastUpdateTime = LocalDateTime.now();
+        if (lastInitTime == null){
+            lastInitTime = lastUpdateTime;
+        }
     }
 
     /**
@@ -126,6 +129,14 @@ public class ColectionManager {
         lastSaveTime = LocalDateTime.now();
     }
 
+    public boolean isContainId(Long id){
+        if (routesMap.containsKey(id)){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     @Override
     public String toString() {
         if (routes.isEmpty()) return "Коллекция пуста!";
@@ -133,7 +144,7 @@ public class ColectionManager {
         String info = "Время инициализации: " + lastInitTime.toString() + '\n' +
                 "Врема последнего изменения: " + lastUpdateTime.toString() + '\n' +
                 "Тип объектов: Routes" + '\n' +
-                "Количество элементов" + routes.size();
+                "Количество элементов: " + routes.size();
 
         return info;
     }

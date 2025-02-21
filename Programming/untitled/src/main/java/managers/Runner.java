@@ -18,13 +18,19 @@ public class Runner {
         try {
             this.xmlScaner = new RouteXMLScaner(new File("src\\main\\resources\\" + "prog_lab_5_data.xml"));
             this.xmlWriter = new RouteXMLWriter("src\\main\\resources\\test.xml");
+            colectionManager = new ColectionManager(this.xmlScaner, this.xmlWriter);
+            commandManager = new CommandManager();
         } catch (IOException e) {
             System.out.println("file not found");
             throw new RuntimeException(e);
         }
     }
+    public void run(){
+        fillCommands();
+        colectionManager.update();
+    }
 
-    public void fillCollection() {
+    public void fillCommands() {
         // help
         Command help = new Help(
                 "help",
@@ -85,6 +91,7 @@ public class Runner {
         Command save = new Save(
                 "save",
                 "сохранить коллекцию в файл",
+                this.xmlWriter,
                 this.colectionManager
         );
         this.commandManager.addCommand(save);
@@ -93,15 +100,14 @@ public class Runner {
         Command executeScript = new ExecuteScript(
                 "execute_script",
                 "считать и исполнить скрипт из указанного файла",
-                this.colectionManager
+                this.commandManager
         );
         this.commandManager.addCommand(executeScript);
 
         // exit
         Command exit = new Exit(
                 "exit",
-                "завершить программу (без сохранения в файл)",
-                this.colectionManager
+                "завершить программу (без сохранения в файл)"
         );
         this.commandManager.addCommand(exit);
 
@@ -130,7 +136,7 @@ public class Runner {
         this.commandManager.addCommand(removeLower);
 
         // average_of_distance
-        Command averageOfDistance = new AverageOfDistance(
+        Command averageOfDistance = new AveregeOfDistance(
                 "average_of_distance",
                 "вывести среднее значение поля distance для всех элементов коллекции",
                 this.colectionManager
@@ -152,5 +158,21 @@ public class Runner {
                 this.colectionManager
         );
         this.commandManager.addCommand(printAscending);
+    }
+
+    public ColectionManager getColectionManager() {
+        return colectionManager;
+    }
+
+    public RouteXMLWriter getXmlWriter() {
+        return xmlWriter;
+    }
+
+    public RouteXMLScaner getXmlScaner() {
+        return xmlScaner;
+    }
+
+    public CommandManager getCommandManager() {
+        return commandManager;
     }
 }
