@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Set;
 
 public class ColectionManager {
     LinkedList<Route> routes;
@@ -147,6 +148,14 @@ public class ColectionManager {
                 "Количество элементов: " + routes.size();
 
         return info;
+    }
+
+    public long getSize(){
+        return routes.size();
+    }
+
+    public Set<Long> getIdSet(){
+        return routesMap.keySet();
     }
 }
 

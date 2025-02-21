@@ -4,6 +4,8 @@ import IO.ConsoleQuest;
 import itemsInArrea.Route;
 import managers.ColectionManager;
 
+import java.util.Iterator;
+
 public class RemoveLower extends Command {
     private ColectionManager colMan;
 
@@ -16,10 +18,13 @@ public class RemoveLower extends Command {
     public void execute(String[] args) {
         Route curRoute = ConsoleQuest.askRoute(colMan, -1L);
 
-        for (Route route : colMan.getroutes()) {
+        Iterator<Route> it = colMan.getroutes().iterator();
+        while (it.hasNext()) {
+            Route route = it.next();
             if (curRoute.compareTo(route) > 0) {
-                colMan.remove(route.getId());
+                it.remove(); // используем метод iterator.remove()
             }
         }
+        System.out.println("All Objects was successfully removed");
     }
 }
