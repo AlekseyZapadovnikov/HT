@@ -16,7 +16,13 @@ public class ExecuteScript extends Command{
 
     @Override
     public void execute(String[] args) {
-        File file = new File(args[0]);
+        File file = null;
+        try {
+            file = new File("src\\main\\resources\\" + args[0]);
+        } catch (IndexOutOfBoundsException e) {
+            System.out.println("you haven`t enter a file name");
+            return;
+        }
         try {
             Scanner scanner = new Scanner(file);
             while (scanner.hasNextLine()){
@@ -28,6 +34,7 @@ public class ExecuteScript extends Command{
                     }
                     Command command = commandManager.getCommandByName(line[0].trim());
                     command.execute(arguments);
+                    System.out.println("\n");
             } catch (Exception ex){
                     System.out.println("uncorrected command");
                 }
@@ -35,7 +42,7 @@ public class ExecuteScript extends Command{
             scanner.close();
         } catch (FileNotFoundException e) {
             System.out.println("File not found");
-            throw new RuntimeException(e);
+            System.out.println("File have to be in 'src\\main\\resources\\'");
         }
     }
 }
