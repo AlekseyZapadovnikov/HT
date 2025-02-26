@@ -3,17 +3,47 @@ package itemsInArrea;
 import utility.Validate;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
+/**
+ * The Route class represents a route with various attributes such as id, name, coordinates,
+ * creation date, starting and ending locations, and distance.
+ * <p>
+ * This class implements the {@link Validate} interface to ensure that a Route instance is valid,
+ * and the {@link Comparable} interface to compare two Route objects based on their id.
+ * </p>
+ */
 public class Route implements Validate, Comparable<Route> {
-    private long id; //Значение поля должно быть больше 0, Значение этого поля должно быть уникальным, Значение этого поля должно генерироваться автоматически
-    private String name; //Поле не может быть null, Строка не может быть пустой
-    private Coordinates coordinates; //Поле не может быть null
-    private java.time.LocalDate creationDate; //Поле не может быть null, Значение этого поля должно генерироваться автоматически
-    private Location from; //Поле не может быть null
-    private Location to; //Поле может быть null
-    private long distance; //Значение поля должно быть больше 1
+    // The id of the route. Must be greater than 0, unique, and generated automatically.
+    private long id;
 
+    // The name of the route. Cannot be null or empty.
+    private String name;
+
+    // The coordinates of the route. Cannot be null.
+    private Coordinates coordinates;
+
+    // The date of creation. Cannot be null and is generated automatically.
+    private LocalDate creationDate;
+
+    // The starting location of the route. Cannot be null.
+    private Location from;
+
+    // The destination location of the route. Can be null.
+    private Location to;
+
+    // The distance of the route. Must be greater than 1.
+    private long distance;
+
+    /**
+     * Constructs a new Route with the specified attributes including a destination location.
+     *
+     * @param id          the unique identifier of the route (must be > 0)
+     * @param name        the name of the route (cannot be null or empty)
+     * @param coordinates the coordinates of the route (cannot be null)
+     * @param from        the starting location (cannot be null)
+     * @param distance    the distance of the route (must be > 1)
+     * @param to          the destination location (can be null)
+     */
     public Route(long id, String name, Coordinates coordinates, Location from, long distance, Location to) {
         this.id = id;
         this.name = name;
@@ -24,18 +54,44 @@ public class Route implements Validate, Comparable<Route> {
         this.distance = distance;
     }
 
+    /**
+     * Constructs a new Route with the specified attributes without a destination location.
+     *
+     * @param id          the unique identifier of the route (must be > 0)
+     * @param name        the name of the route (cannot be null or empty)
+     * @param coordinates the coordinates of the route (cannot be null)
+     * @param from        the starting location (cannot be null)
+     * @param distance    the distance of the route (must be > 1)
+     */
     public Route(long id, String name, Coordinates coordinates, Location from, long distance) {
         this.id = id;
-        this.distance = distance;
-        this.from = from;
-        this.creationDate = LocalDate.now();
-        this.coordinates = coordinates;
         this.name = name;
+        this.coordinates = coordinates;
+        this.creationDate = LocalDate.now();
+        this.from = from;
+        this.distance = distance;
     }
 
+    /**
+     * Default constructor.
+     */
     public Route() {
     }
 
+    /**
+     * Validates the properties of the Route object.
+     * <p>
+     * A valid Route must have:
+     * - an id greater than 0,
+     * - a non-null, non-empty name,
+     * - a non-null creation date,
+     * - non-null and valid coordinates,
+     * - a non-null starting location,
+     * - a distance greater than 1.
+     * </p>
+     *
+     * @return true if the Route is valid; false otherwise.
+     */
     public boolean validate() {
         if (id <= 0) return false;
         if (name == null || name.isEmpty()) return false;
@@ -45,68 +101,94 @@ public class Route implements Validate, Comparable<Route> {
         return true;
     }
 
+    /**
+     * Gets the unique identifier of the route.
+     *
+     * @return the id of the route.
+     */
     public long getId() {
         return id;
     }
 
+    /**
+     * Gets the distance of the route.
+     *
+     * @return the distance.
+     */
     public long getDistance() {
         return distance;
     }
 
+    /**
+     * Gets the destination location.
+     *
+     * @return the destination location, or null if not set.
+     */
     public Location getTo() {
         return to;
     }
 
+    /**
+     * Gets the starting location.
+     *
+     * @return the starting location.
+     */
     public Location getFrom() {
         return from;
     }
 
+    /**
+     * Gets the creation date.
+     *
+     * @return the creation date.
+     */
     public LocalDate getCreationDate() {
         return creationDate;
     }
 
+    /**
+     * Gets the coordinates of the route.
+     *
+     * @return the coordinates.
+     */
     public Coordinates getCoordinates() {
         return coordinates;
     }
 
+    /**
+     * Gets the name of the route.
+     *
+     * @return the name.
+     */
     public String getName() {
         return name;
     }
 
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public void setDistance(long distance) {
-        this.distance = distance;
-    }
-
-    public void setTo(Location to) {
-        this.to = to;
-    }
-
-    public void setFrom(Location from) {
-        this.from = from;
-    }
-
-    public void setCreationDate(LocalDate creationDate) {
-        this.creationDate = creationDate;
-    }
-
-    public void setCoordinates(Coordinates coordinates) {
-        this.coordinates = coordinates;
-    }
-
+    /**
+     * Sets a new name for the route.
+     *
+     * @param name the new name to set.
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Compares this Route with another Route based on their ids.
+     *
+     * @param other the other Route to compare to.
+     * @return a negative integer, zero, or a positive integer as this id is less than, equal to, or greater than the other id.
+     */
     @Override
     public int compareTo(Route other) {
-        // Сравниваем по полю id
         return Long.compare(this.id, other.id);
     }
 
+    /**
+     * Returns a string representation of the Route.
+     *
+     * @return a string representation containing all attributes of the route.
+     */
     @Override
     public String toString() {
         return "Route{" +

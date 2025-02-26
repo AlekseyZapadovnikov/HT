@@ -8,15 +8,38 @@ import comands.*;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * Initializes and manages the application's main components:
+ * <ul>
+ *   <li>{@link ColectionManager} for storing and manipulating routes.</li>
+ *   <li>{@link CommandManager} for registering and retrieving command objects.</li>
+ *   <li>{@link RouteXMLScaner} and {@link RouteXMLWriter} for reading/writing route data.</li>
+ * </ul>
+ * <p>
+ * The {@code Runner} class also contains the logic to fill the {@code CommandManager}
+ * with all the available commands.
+ * </p>
+ */
 public class Runner {
+
     private ColectionManager colectionManager;
     private CommandManager commandManager;
     private RouteXMLScaner xmlScaner;
     private RouteXMLWriter xmlWriter;
 
+    /**
+     * Constructs a {@code Runner}, initializing the XML scanner and writer,
+     * creating a {@link ColectionManager}, and instantiating a {@link CommandManager}.
+     * <p>
+     * The file <em>"prog_lab_5_data.xml"</em> is used as the data source,
+     * and <em>"test.xml"</em> is used as the output file for saving data.
+     * </p>
+     *
+     * @throws RuntimeException if the required file is not found
+     */
     public Runner() {
         try {
-            this.xmlScaner = new RouteXMLScaner(new File("src\\main\\resources\\" + "prog_lab_5_data.xml"));
+            this.xmlScaner = new RouteXMLScaner(new File("src\\main\\resources\\prog_lab_5_data.xml"));
             this.xmlWriter = new RouteXMLWriter("src\\main\\resources\\test.xml");
             colectionManager = new ColectionManager(this.xmlScaner, this.xmlWriter);
             commandManager = new CommandManager();
@@ -25,11 +48,23 @@ public class Runner {
             throw new RuntimeException(e);
         }
     }
-    public void run(){
+
+    /**
+     * Executes the main run sequence:
+     * <ul>
+     *   <li>Populates the {@link CommandManager} with all available commands.</li>
+     *   <li>Updates the collection manager (e.g., sorts the routes).</li>
+     * </ul>
+     */
+    public void run() {
         fillCommands();
         colectionManager.update();
     }
 
+    /**
+     * Registers all commands in the {@link CommandManager},
+     * associating each command's name with its respective {@link Command} instance.
+     */
     public void fillCommands() {
         // help
         Command help = new Help(
@@ -160,18 +195,38 @@ public class Runner {
         this.commandManager.addCommand(printAscending);
     }
 
+    /**
+     * Gets the underlying {@link ColectionManager}, which handles the stored routes.
+     *
+     * @return the current {@link ColectionManager} instance
+     */
     public ColectionManager getColectionManager() {
         return colectionManager;
     }
 
+    /**
+     * Gets the {@link RouteXMLWriter} associated with this runner.
+     *
+     * @return the {@link RouteXMLWriter} for saving routes to file
+     */
     public RouteXMLWriter getXmlWriter() {
         return xmlWriter;
     }
 
+    /**
+     * Gets the {@link RouteXMLScaner} used to read initial route data.
+     *
+     * @return the {@link RouteXMLScaner} instance
+     */
     public RouteXMLScaner getXmlScaner() {
         return xmlScaner;
     }
 
+    /**
+     * Returns the {@link CommandManager}, containing all registered commands.
+     *
+     * @return the current {@link CommandManager}
+     */
     public CommandManager getCommandManager() {
         return commandManager;
     }

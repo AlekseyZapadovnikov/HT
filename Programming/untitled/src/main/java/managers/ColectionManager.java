@@ -10,16 +10,38 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Set;
 
+/**
+ * Manages a collection of {@link Route} objects, providing methods to add,
+ * update, remove, save, and retrieve routes by their ID.
+ * <p>
+ * The class also keeps track of initialization, update, and save times.
+ */
 public class ColectionManager {
+    /**
+     * The list of routes (used as the main collection).
+     */
     LinkedList<Route> routes;
+
+    /**
+     * A map from route IDs to {@link Route} objects for quick lookup.
+     */
     HashMap<Long, Route> routesMap = new HashMap<>();
+
     private int currentId = 1;
     private LocalDateTime lastInitTime;
     private LocalDateTime lastUpdateTime;
     private LocalDateTime lastSaveTime;
+
     private RouteXMLScaner scaner;
     private RouteXMLWriter writer;
 
+    /**
+     * Constructs a {@code ColectionManager} by reading data via the given scanner.
+     * Initializes the collection and sets {@link #lastInitTime} to the current time.
+     *
+     * @param scaner the XML scanner to read initial data from
+     * @param writer the XML writer to save data
+     */
     public ColectionManager(RouteXMLScaner scaner, RouteXMLWriter writer) {
         this.lastInitTime = LocalDateTime.now();
         this.scaner = scaner;
@@ -32,46 +54,68 @@ public class ColectionManager {
     }
 
     /**
-     * @return Последнее время инициализации.
+     * Returns the last initialization time of the collection manager.
+     *
+     * @return the {@link LocalDateTime} of the last initialization
      */
     public LocalDateTime getLastInitTime() {
         return lastInitTime;
     }
 
     /**
-     * @return Последнее время сохранения.
+     * Returns the last time the routes were saved to file.
+     *
+     * @return the {@link LocalDateTime} of the last save
      */
     public LocalDateTime getLastSaveTime() {
         return lastSaveTime;
     }
 
     /**
-     * @return коллекция.
+     * Returns the current list of routes.
+     *
+     * @return a {@link LinkedList} of routes
      */
     public LinkedList<Route> getroutes() {
         return routes;
     }
 
     /**
-     * Получить Route по ID
+     * Gets a {@link Route} object by its unique ID.
+     *
+     * @param id the route's ID
+     * @return the {@code Route} with the given ID, or {@code null} if not found
      */
-    public Route byId(long id) { return routesMap.get(id); }
+    public Route byId(long id) {
+        return routesMap.get(id);
+    }
 
     /**
-     * Содержит ли колекции Route
+     * Checks if the given {@link Route} is contained in this collection.
+     *
+     * @param e the route to check
+     * @return {@code true} if it is present or {@code e} is null,
+     *         {@code false} otherwise
      */
-    public boolean isСontain(Route e) { return e == null || byId(e.getId()) != null; }
+    public boolean isСontain(Route e) {
+        return e == null || byId(e.getId()) != null;
+    }
 
     /**
-     * Получить свободный ID
+     * Finds the next free ID that is not yet used in the collection.
+     *
+     * @return a long value representing a free ID
      */
     public long getFreeId() {
-        while (byId(++currentId) != null);
+        while (byId(++currentId) != null) ;
         return currentId;
     }
 
     /**
-     * Добавляет Route
+     * Adds a new {@link Route} to the collection if it is not already present.
+     *
+     * @param a the route to add
+     * @return {@code true} if added, {@code false} otherwise
      */
     public boolean add(Route a) {
         if (isСontain(a)) return false;
@@ -81,9 +125,11 @@ public class ColectionManager {
         return true;
     }
 
-
     /**
-     * Обновляет Route
+     * Updates an existing {@link Route} in the collection.
+     *
+     * @param a the route with updated values
+     * @return {@code true} if successfully updated, {@code false} if not found
      */
     public boolean update(Route a) {
         if (!isСontain(a)) return false;
@@ -95,7 +141,10 @@ public class ColectionManager {
     }
 
     /**
-     * Удаляет Route по ID
+     * Removes the {@link Route} with the specified ID from the collection.
+     *
+     * @param id the ID of the route to remove
+     * @return {@code true} if the route was removed, {@code false} if not found
      */
     public boolean remove(long id) {
         var a = byId(id);
@@ -106,56 +155,84 @@ public class ColectionManager {
         return true;
     }
 
+    /**
+     * Clears all routes from the collection.
+     */
     public void clear(){
         routes.clear();
         routesMap.clear();
     }
 
     /**
-     * Фиксирует изменения коллекции
+     * Sorts the routes, updates {@link #lastUpdateTime} to the current time,
+     * and initializes {@link #lastInitTime} if it was null.
      */
     public void update() {
         Collections.sort(routes);
         lastUpdateTime = LocalDateTime.now();
-        if (lastInitTime == null){
+        if (lastInitTime == null) {
             lastInitTime = lastUpdateTime;
         }
     }
 
     /**
-     * Сохраняет коллекцию в файл
+     * Saves the routes to an external file using {@link RouteXMLWriter}.
+     *
+     * @throws IOException if an I/O error occurs while saving
      */
     public void saveRoutes() throws IOException {
         writer.writeRoutes(routes);
         lastSaveTime = LocalDateTime.now();
     }
 
-    public boolean isContainId(Long id){
-        if (routesMap.containsKey(id)){
-            return true;
-        } else {
-            return false;
-        }
+    /**
+     * Checks if the collection contains a route with the given ID.
+     *
+     * @param id the ID to check
+     * @return {@code true} if the ID is present, {@code false} otherwise
+     */
+    public boolean isContainId(Long id) {
+        return routesMap.containsKey(id);
     }
 
+    /**
+     * Returns a string with information about the collection:
+     * <ul>
+     *   <li>Initialization time</li>
+     *   <li>Last update time</li>
+     *   <li>Type of objects</li>
+     *   <li>Number of elements</li>
+     * </ul>
+     *
+     * @return info about the collection
+     */
     @Override
     public String toString() {
         if (routes.isEmpty()) return "Коллекция пуста!";
 
         String info = "Время инициализации: " + lastInitTime.toString() + '\n' +
-                "Врема последнего изменения: " + lastUpdateTime.toString() + '\n' +
+                "Время последнего изменения: " + lastUpdateTime.toString() + '\n' +
                 "Тип объектов: Routes" + '\n' +
                 "Количество элементов: " + routes.size();
 
         return info;
     }
 
-    public long getSize(){
+    /**
+     * Returns the current size of the collection.
+     *
+     * @return the number of routes
+     */
+    public long getSize() {
         return routes.size();
     }
 
-    public Set<Long> getIdSet(){
+    /**
+     * Returns all IDs stored in the collection as a {@link Set}.
+     *
+     * @return a set of route IDs
+     */
+    public Set<Long> getIdSet() {
         return routesMap.keySet();
     }
 }
-
