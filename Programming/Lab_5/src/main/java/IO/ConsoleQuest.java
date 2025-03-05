@@ -159,6 +159,9 @@ public class ConsoleQuest {
                 if (!line.isEmpty()) {
                     name = line;
                     break;
+                } else {
+                    name = null;
+                    break;
                 }
             }
 

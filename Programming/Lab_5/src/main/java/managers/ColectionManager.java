@@ -147,7 +147,7 @@ public class ColectionManager {
      * @return {@code true} if the route was removed, {@code false} if not found
      */
     public boolean remove(long id) {
-        var a = byId(id);
+        Route a = byId(id);
         if (a == null) return false;
         routesMap.remove(a.getId());
         routes.remove(a);

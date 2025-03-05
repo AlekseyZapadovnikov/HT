@@ -39,8 +39,8 @@ public class Runner {
      */
     public Runner() {
         try {
-            this.xmlScaner = new RouteXMLScaner(new File("src\\main\\resources\\prog_lab_5_data.xml"));
-            this.xmlWriter = new RouteXMLWriter("src\\main\\resources\\test.xml");
+            this.xmlScaner = new RouteXMLScaner(new File("src/main/resources/prog_lab_5_data.xml"));
+            this.xmlWriter = new RouteXMLWriter("src/main/resources/test.xml");
             colectionManager = new ColectionManager(this.xmlScaner, this.xmlWriter);
             commandManager = new CommandManager();
         } catch (IOException e) {
