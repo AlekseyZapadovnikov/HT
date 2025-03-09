@@ -105,10 +105,10 @@ value_1: WORD 0xfbb8 ; 201
 ORG 0x6B7
 FUNCTION: ; 6B7
 	LD (sp + 1)
-	BMI IP4
+	BMI IP4 ; если отрицательное "-" то присваиваем значению в стеке temp_1
 	CMP temp_1
-	BGE IP4
-	ADD (SP + 1)
+	BGE IP4 ; если значение больше или равно temp_1, то присваиваем значению в стеке temp_1, OR
+	ADD (SP + 1) ; иначе удваиваем и + temp_2 и записываем в стэк
 	ADD temp_2
 	IP5: JUMP IP1
 	IP4: LD temp_1
@@ -116,3 +116,8 @@ FUNCTION: ; 6B7
 	RET
 	temp_1: WORD 0x06A3
 	temp_2: WORD 0x00C9
+
+
+
+
+	
