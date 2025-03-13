@@ -17,12 +17,12 @@ KUB_POS:
 	loop mult_2
 	jump AA
 	st mult_res
-	ld num
+	ld mult_1
 	dec
-	st num
+	st mult_1
 	ld mult_res
 	AB: add mult_res
-	loop num
+	loop mult_1
 	jump AB
 	st mult_res
 	ret
@@ -45,13 +45,29 @@ KUB:
 	met3: ret
 
 MOD_POS:
-	ld mult_res
-	bmi: mmm
-	
+	st ost_24
+	mm1: bmi mmm
+	sub const_24
+	st ost_24
+	jump mm1
 	mmm: ret
 
-MOD_24:
+MOD_NEG:
+	neg
+	st mult_res
+	call MOD_POS
+	st const_24
+	sub ost_24
+	st ost_24
 	ret
+
+MOD_24:
+	ld mult_res
+	bmi otr_m
+	pos_m: call mod_pos
+	jump finish
+	otr_m: call mod_neg
+	finish: ret
 
 
 ost_24: word 0x0000
