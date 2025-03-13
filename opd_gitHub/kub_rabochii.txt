@@ -1,0 +1,62 @@
+
+org 0x0100
+cla
+call KUB
+ld mult_res
+hlt
+
+
+
+KUB_POS:
+	ld num
+	st mult_1
+	st mult_2
+	st num
+	ld mult_res
+	AA: add mult_1
+	loop mult_2
+	jump AA
+	st mult_res
+	ld num
+	dec
+	st num
+	ld mult_res
+	AB: add mult_res
+	loop num
+	jump AB
+	st mult_res
+	ret
+	
+KUB_NEG:
+	ld num
+	neg
+	st num
+	call KUB_POS
+	neg
+	st mult_res
+	ret
+
+KUB:
+	ld num
+	bmi MET1
+	MET2: call KUB_POS
+	jump met3
+	MET1: call KUB_NEG
+	met3: ret
+
+MOD_POS:
+	ld mult_res
+	bmi: mmm
+	
+	mmm: ret
+
+MOD_24:
+	ret
+
+
+ost_24: word 0x0000
+const_24: 0x0018
+mult_1: WORD 0x0000
+mult_2: WORD 0x0000
+mult_res: WORD 0x0000
+num: WORD 0xfffa
