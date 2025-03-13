@@ -1,0 +1,90 @@
+CREATE TABLE clothes
+(
+	id integer PRIMARY KEY,
+	tip varchar(30),
+	color varchar(20),
+	stile varchar(100)
+);
+
+CREATE TABLE roles
+(
+	id integer PRIMARY KEY,
+	role_name varchar(20),
+	reqired_gender bool,
+	required_clothes varchar(20)
+);
+
+CREATE TABLE agency
+(
+	id integer PRIMARY KEY,
+	agency_name varchar(20),
+	staff integer,
+	averege_price integer
+);
+
+CREATE TABLE fashion_show
+(
+	id integer PRIMARY KEY,
+  	show_name varchar(20),
+	rating integer,
+	averege_views integer
+);
+
+CREATE TABLE models
+(
+	id int PRIMARY KEY,
+	age integer,
+	model_name varchar(30),
+	clothes_id integer REFERENCES clothes(id) NOT NULL,
+	modeling_agency_id integer REFERENCES agency(id),
+	role_id integer,
+	isMale bool
+);
+
+CREATE TABLE roles_models
+(
+	role_id int REFERENCES roles(id),
+	model_id int REFERENCES models(id),
+
+	CONSTRAINT roles_models_pk PRIMARY KEY (role_id, model_id) -- composite key
+);
+
+CREATE TABLE agency_fashion_show
+(
+	agency_id int REFERENCES agency(id),
+	fashion_show_id int REFERENCES fashion_show(id),
+
+	CONSTRAINT agency_fashion_show_pk PRIMARY KEY (agency_id, fashion_show_id) -- composite key
+);
+
+
+INSERT INTO clothes VALUES (1, 'джинсы', 'тёмно-синие' , 'ретро_стайл');
+INSERT INTO clothes VALUES (2, 'ковбойка', 'коричнево-белая' , 'ретро_стайл');
+INSERT INTO clothes VALUES (3, 'туфли', 'чёрный' , 'ретро_стайл');
+INSERT INTO clothes VALUES (4, 'желетка', 'джинсовый цвет' , 'ретро_стайл');
+INSERT INTO clothes VALUES (5, 'ремень с большой бляшкой', 'чёрный' , 'ретро_стайл');
+INSERT INTO clothes VALUES (6, 'рубашка', 'белая' , 'ретро_стайл');
+INSERT INTO clothes VALUES (7, 'блузка с корсетом', 'белая' , 'ретро_стайл');
+
+
+INSERT INTO ROLES VALUES
+(1, 'бармен', true, null),
+(2, 'бармен', null, 'эпичный облик');
+
+
+INSERT INTO agency VALUES
+(1, 'AmericanWoomen ', 100, 100),
+(2, 'CameraMen', 7000, 70),
+(3, 'LasVegasBoy', 900, 120);
+
+INSERT INTO fashion_show VALUES
+(1, 'Versace 1991', 10, 1000000),
+(2, 'John Galliano 1994', 9, 70000),
+(3, 'Louis Vuitton 2008', 10, 12000);
+
+
+INSERT INTO models VALUES
+(1, 25, 'Ellie', 1, 1, 1, false),
+(2, 28, 'Granta', 2, 2, 2, false),
+(3, 37, 'Djek', 4, 1, 3, true),
+(4, 52, 'Marina', 5, 1, 1, false)
