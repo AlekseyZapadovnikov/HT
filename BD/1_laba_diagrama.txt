@@ -1,0 +1,58 @@
+Table models {
+  id integer [primary key]
+  age integer
+  m_name varchar(30)
+  clothes_id integer
+  agency_id integer
+  role_id intager
+  isMale bool
+}
+
+Table clothes {
+  id integer [primary key]
+  color varchar(30)
+  stile varchar(30)
+}
+
+Table roles {
+  id integer [primary key]
+  role_name varchar(30)
+  required_gender varchar(30)
+  required_clothes varchar(30)
+}
+
+Table agency {
+  id int [primary key]
+  agency_name varchar(30)
+  staff int
+  average_price int
+}
+
+Table fashion_show {
+  id int [primary key]
+  rating int
+  aver_views int
+}
+
+Table agency_show {
+  ag_id int [primary key]
+  show_id int
+}
+
+Table role_model {
+  role_id int [primary key]
+  model_id int
+}
+
+
+Ref a: clothes.id - models.id 
+
+Ref b: roles.id - role_model.role_id
+
+Ref c: role_model.model_id - models.id
+
+Ref: models.id > agency.id
+
+Ref: agency.id - agency_show.ag_id
+
+Ref: agency_show.show_id - fashion_show.id

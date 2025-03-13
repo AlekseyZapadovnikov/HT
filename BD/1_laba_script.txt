@@ -35,16 +35,16 @@ CREATE TABLE models
 	id int PRIMARY KEY,
 	age integer,
 	model_name varchar(30),
-	clothes_id integer REFERENCES clothes(id) NOT NULL,
-	modeling_agency_id integer REFERENCES agency(id),
+	clothes_id integer NOT NULL UNIQUE REFERENCES clothes(id) ON DELETE SET NULL,
+	modeling_agency_id integer REFERENCES agency(id) ON DELETE CASCADE,
 	role_id integer,
 	isMale bool
 );
 
 CREATE TABLE roles_models
 (
-	role_id int REFERENCES roles(id),
-	model_id int REFERENCES models(id),
+	role_id int REFERENCES roles(id) ON DELETE SET NULL,
+	model_id int REFERENCES models(id) ON DELETE SET NULL,
 
 	CONSTRAINT roles_models_pk PRIMARY KEY (role_id, model_id) -- composite key
 );

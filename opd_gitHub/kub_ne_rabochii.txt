@@ -1,0 +1,31 @@
+ld #0x0002
+call KUB
+ld mult_res
+
+
+
+
+
+KUB:
+	ld num
+	st mult_1
+	dec
+	st mult_2
+	st num
+	ld mult_res
+	AA: add mult_1
+	loop mult_2
+	jump AA
+	st mult_res
+	AB: add mult_res
+	loop num
+	jump AB
+	st mult_res
+	ret
+	
+
+
+mult_1: WORD 0x0000
+mult_2: WORD 0x0000
+mult_res: WORD 0x0000
+num: WORD 0x0004
