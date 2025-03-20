@@ -1,0 +1,201 @@
+org 0x019E
+cla ; 0x19E
+st value_1 ; 0x19F
+ld T ; 0x1A0
+PUSH ; 0x1A1
+CALL $FUNCTION ; 0x1A2
+POP ; 0x1A3
+SUB value_1 ; 0x1A4
+ST value_1 ; 0x1A5
+LD value_0 ; 0x1A6
+INC ; 0x1A7
+PUSH ; 0x1A8
+CALL $FUNCTION ; 0x1A9
+POP ; 0x1AA
+INC ; 0x1AB
+SUB value_1 ; 0x1AC
+ST value_1 ; 0x1AD
+LD Y ; 0x1AE
+INC ; 0x1AF
+PUSH ; 0x1B0
+CALL $FUNCTION ; 0x1B1
+POP ; 0x1B2
+ADD value_1 ; 0x1B3
+ST value_1 ; 0x1B4
+LD V ; 0x1B5
+DEC ; 0x1B6
+PUSH ; 0x1B7
+CALL $FUNCTION ; 0x1B8
+POP ; 0x1B9
+DEC ; 0x1BA
+ADD value_1 ; 0x1BB
+ST value_1 ; 0x1BC
+LD U ; 0x1BD
+DEC ; 0x1BE
+PUSH ; 0x1BF
+CALL $FUNCTION ; 0x1C0
+POP ; 0x1C1
+ADD value_1 ; 0x1C2
+ST value_1 ; 0x1C3
+LD R ; 0x1C4
+INC ; 0x1C5
+PUSH ; 0x1C6
+CALL $FUNCTION ; 0x1C7
+POP ; 0x1C8
+SUB value_1 ; 0x1C9
+ST value_1 ; 0x1CA
+LD Q ; 0x1CB
+INC ; 0x1CC
+PUSH ; 0x1CD
+CALL $FUNCTION ; 0x1CE
+POP ; 0x1CF
+DEC ; 0x1D0
+ADD value_1 ; 0x1D1
+ST value_1 ; 0x1D2
+LD S ; 0x1D3
+PUSH ; 0x1D4
+CALL $FUNCTION ; 0x1D5
+POP ; 0x1D6
+SUB value_1 ; 0x1D7
+ST value_1 ; 0x1D8
+LD W ; 0x1D9
+INC ; 0x1DA
+PUSH ; 0x1DB
+CALL $FUNCTION ; 0x1DC
+POP ; 0x1DD
+SUB value_1 ; 0x1DE
+ST value_1 ; 0x1DF
+LD X ; 0x1E0
+PUSH ; 0x1E1
+CALL $FUNCTION ; 0x1E2
+POP ; 0x1E3
+ADD value_1 ; 0x1E4
+ST value_1 ; 0x1E5
+LD Z ; 0x1E6
+PUSH ; 0x1E7
+CALL $FUNCTION ; 0x1E8
+POP ; 0x1E9
+ADD value_1 ; 0x1EA
+ST value_1 ; 0x1EB
+LD P ; 0x1EC
+DEC ; 0x1ED
+PUSH ; 0x1EE
+CALL $FUNCTION ; 0x1EF
+POP ; 0x1F0
+DEC ; 0x1F1
+ADD value_1 ; 0x1F2
+ST value_1 ; 0x1F3
+hlt ; 0x1F4
+Z: WORD 0x0000 ; 0x1F5
+Y: WORD 0x0000 ; 0x1F6
+X: WORD 0x0000 ; 0x1F7
+W: WORD 0x0000 ; 0x1F8
+V: WORD 0x0000 ; 0x1F9
+U: WORD 0x0000 ; 0x1FA
+T: WORD 0x0000 ; 0x1FB
+S: WORD 0x0000 ; 0x1FC
+R: WORD 0x0000 ; 0x1FD
+Q: WORD 0x0000 ; 0x1FE
+P: WORD 0x0000 ; 0x1FF
+value_0: WORD 0x0000 ; 200
+value_1: WORD 0xfbb8 ; 201
+
+
+
+ORG 0x6B7
+FUNCTION: ; 6B7
+	LD (sp + 1)
+	BMI IP4 ; если отрицательное "-" то присваиваем значению в стеке temp_1
+	CMP temp_1
+	BGE IP4 ; если значение больше или равно temp_1, то присваиваем значению в стеке temp_1, OR
+	ADD (SP + 1) ; иначе удваиваем и + temp_2 и записываем в стэк
+	ADD temp_2
+	IP5: JUMP IP1
+	IP4: call ALT_FUNCTION
+	IP1: ST (SP + 1)
+	RET
+	temp_1: WORD 0x06A3
+	temp_2: WORD 0x00C9
+
+; ------------------------------------------------------------------------------------------
+
+ALT_FUNCTION:
+	ST num
+	call KUB
+	call MOD_24
+	ret
+
+
+
+KUB_POS:
+	ld num
+	st mult_1
+	st mult_2
+	st num
+	ld mult_res
+	AA: add mult_1
+	loop mult_2
+	jump AA
+	st mult_res
+	ld mult_1
+	dec
+	st mult_1
+	ld mult_res
+	AB: add mult_res
+	loop mult_1
+	jump AB
+	st mult_res
+	ret
+	
+KUB_NEG:
+	ld num
+	neg
+	st num
+	call KUB_POS
+	neg
+	st mult_res
+	ret
+
+KUB:
+	ld num
+	bmi MET1
+	MET2: call KUB_POS
+	jump met3
+	MET1: call KUB_NEG
+	met3: ret
+
+MOD_POS:
+	st ost_24
+	mm1: bmi mmm
+	sub const_24
+	st ost_24
+	jump mm1
+	mmm:
+	add const_24
+	st ost_24
+	ret
+
+MOD_NEG:
+	neg
+	st mult_res
+	call MOD_POS
+	ld const_24
+	sub ost_24
+	st ost_24
+	ret
+
+MOD_24:
+	ld mult_res
+	bmi otr_m
+	pos_m: call MOD_POS
+	jump finish
+	otr_m: call MOD_NEG
+	finish: ret
+
+
+ost_24: word 0x0000
+const_24: word 0x0018
+mult_1: WORD 0x0000
+mult_2: WORD 0x0000
+mult_res: WORD 0xfff0
+num: WORD 0xFFFA
