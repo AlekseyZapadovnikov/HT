@@ -1,10 +1,9 @@
-
 org 0x0100
 cla
-call KUB
-ld mult_res
-hlt
 
+call MOD_24
+ld ost_24
+hlt
 
 
 KUB_POS:
@@ -50,13 +49,16 @@ MOD_POS:
 	sub const_24
 	st ost_24
 	jump mm1
-	mmm: ret
+	mmm:
+	add const_24
+	st ost_24
+	ret
 
 MOD_NEG:
 	neg
 	st mult_res
 	call MOD_POS
-	st const_24
+	ld const_24
 	sub ost_24
 	st ost_24
 	ret
@@ -64,15 +66,15 @@ MOD_NEG:
 MOD_24:
 	ld mult_res
 	bmi otr_m
-	pos_m: call mod_pos
+	pos_m: call MOD_POS
 	jump finish
-	otr_m: call mod_neg
+	otr_m: call MOD_NEG
 	finish: ret
 
 
 ost_24: word 0x0000
-const_24: 0x0018
+const_24: word 0x0018
 mult_1: WORD 0x0000
 mult_2: WORD 0x0000
-mult_res: WORD 0x0000
-num: WORD 0xfffa
+mult_res: WORD 0xfff0
+num: WORD 0xFFFA
