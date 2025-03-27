@@ -24,22 +24,14 @@ WHERE
 
 ----------------------------------------------------
 
-SELECT
-    (
-      SELECT COUNT(*) 
-      FROM (SELECT ФАМИЛИЯ
-            FROM Н_ЛЮДИ
-            GROUP BY ФАМИЛИЯ
-           ) AS sub_fam
-    ),
-    (
-      SELECT COUNT(*)
-      FROM (SELECT ОТЧЕСТВО
-            FROM Н_ЛЮДИ 
-            GROUP BY ОТЧЕСТВО
-           ) AS sub_otc
-    )
-;
+SELECT COUNT(*)
+	FROM (
+		SELECT
+		ФАМИЛИЯ, ОТЧЕСТВО
+		FROM Н_ЛЮДИ
+		GROUP BY ФАМИЛИЯ, ОТЧЕСТВО
+	
+	);
 
 ----------------------------------------------------
 
