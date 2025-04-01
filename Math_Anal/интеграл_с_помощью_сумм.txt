@@ -1,0 +1,48 @@
+import math
+
+def exact_area(a):
+    """Вычисление точной площади с помощью аналитического интегрирования."""
+    # Первообразная функции: a e^x (x² - 2x + 2) + e^x (x³ - 3x² + 6x - 6)
+    upper = 0.0
+    lower = -a
+
+    # Значение первообразной в верхнем пределе (x=0)
+    F_upper = a * (upper**2 - 2*upper + 2) * math.exp(upper) + \
+              (upper**3 - 3*upper**2 + 6*upper - 6) * math.exp(upper)
+
+    # Значение первообразной в нижнем пределе (x=-a)
+    F_lower = a * (lower**2 - 2*lower + 2) * math.exp(lower) + \
+              (lower**3 - 3*lower**2 + 6*lower - 6) * math.exp(lower)
+
+    return F_upper - F_lower
+
+def numerical_area(a, n):
+    """Вычисление площади методом средних прямоугольников."""
+    left = -a
+    right = 0.0
+    h = (right - left) / n  # Шаг интегрирования
+    total = 0.0
+
+    for i in range(n):
+        x = left + (i + 0.5) * h  # Средняя точка интервала
+        y_top = a * x**2 * math.exp(x)    # Верхняя функция: y = a x² e^x
+        y_bottom = -x**3 * math.exp(x)    # Нижняя функция: y = -x³ e^x
+        total += (y_top - y_bottom) * h   # Площадь элементарного прямоугольника
+
+    return total
+
+# Ввод параметра a
+a = float(input("Введите значение параметра a: "))
+
+# Точное значение площади
+exact = exact_area(a)
+print(f"\nТочная площадь: {exact:.6f}")
+
+# Численное вычисление для n = 10, 100, 1000
+ns = [10, 100, 1000]
+for n in ns:
+    approx = numerical_area(a, n)
+    error = abs(exact - approx)
+    print(f"n = {n}:")
+    print(f"  Приближенная площадь: {approx:.6f}")
+    print(f"  Ошибка: {error:.6f}\n")
