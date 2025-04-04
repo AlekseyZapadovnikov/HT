@@ -1,5 +1,6 @@
 package comands;
 
+import IO.Response;
 import managers.ColectionManager;
 
 /**
@@ -31,11 +32,11 @@ public class Head extends Command {
      * @param args command-line arguments (not used in this command)
      */
     @Override
-    public void execute(String[] args) {
+    public Response execute(String[] args) {
         if (colectionManager.getroutes().isEmpty()) {
-            System.out.println("Collection is empty");
+            return new Response("collection is empty");
         } else {
-            System.out.println(colectionManager.getroutes().get(0));
+            return new Response(super.name, colectionManager.getroutes().get(0));
         }
     }
 }

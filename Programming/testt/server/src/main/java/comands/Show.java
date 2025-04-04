@@ -1,7 +1,10 @@
 package comands;
 
+import IO.Response;
 import itemsInArrea.Route;
 import managers.ColectionManager;
+
+import java.util.LinkedList;
 
 /**
  * Command to display all Route objects from the collection.
@@ -32,9 +35,11 @@ public class Show extends Command {
      * @param args command-line arguments (not used in this command).
      */
     @Override
-    public void execute(String[] args) {
+    public Response execute(String[] args) {
+        LinkedList<Route> routes = new LinkedList<>();
         for (Route route : colectionManager.getroutes()) {
-            System.out.println(route + "\n");
+            routes.add(route);
         }
+        return new Response(super.name, routes);
     }
 }

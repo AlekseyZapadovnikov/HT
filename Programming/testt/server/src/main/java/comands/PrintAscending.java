@@ -1,7 +1,11 @@
 package comands;
 
+import IO.Response;
 import itemsInArrea.Route;
 import managers.ColectionManager;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
 
 /**
  * The PrintAscending class extends the {@code Command} class and prints all routes
@@ -40,10 +44,12 @@ public class PrintAscending extends Command {
      * @param args an array of String arguments (not used in this command)
      */
     @Override
-    public void execute(String[] args) {
+    public Response execute(String[] args) {
         colectionManager.getroutes().sort(null);
+        LinkedList<Route> lst = new LinkedList<>();
         for (Route route : colectionManager.getroutes()) {
-            System.out.println(route);
+            lst.add(route);
         }
+        return new Response(super.name, lst);
     }
 }

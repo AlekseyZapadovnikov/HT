@@ -1,5 +1,6 @@
 package comands;
 
+import IO.Response;
 import managers.ColectionManager;
 
 /**
@@ -41,21 +42,23 @@ public class RemoveById extends Command {
      * @param args an array of command arguments, where the first element should be the ID
      */
     @Override
-    public void execute(String[] args) {
+    public Response execute(String[] args) {
+        Response response;
         try {
             long id = Long.parseLong(args[0]);
             if (colMan.isContainId(id)) {
                 colMan.remove(id);
-                System.out.println("Obj was removed successfully");
+                response = new Response(super.name, "Obj was removed successfully");
             } else {
-                System.out.println("There is no element with such ID");
+                response = new Response(super.name, "There is no element with such ID");
             }
         } catch (NumberFormatException e) {
-            System.out.println("You entered ID incorrectly, ID - type long");
+            return new Response(e,"You entered ID incorrectly, ID - type long");
         } catch (IndexOutOfBoundsException e) {
-            System.out.println("You haven`t entered ID");
+            return new Response(e,"You haven`t entered ID");
         } catch (Exception e) {
-            System.out.println("smth went wrong =(");
+            return new Response(e,"smth went wrong =(");
         }
+        return response;
     }
 }

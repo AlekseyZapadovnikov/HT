@@ -1,5 +1,6 @@
 package comands;
 
+import IO.Response;
 import managers.ColectionManager;
 
 /**
@@ -29,7 +30,8 @@ public class Clear extends Command {
      * @param args not used for this command.
      */
     @Override
-    public void execute(String[] args) {
+    public Response execute(String[] args) {
         colectionManager.clear();
+        return new Response(super.name, "Сollection cleared");
     }
 }

@@ -1,5 +1,6 @@
 package comands;
 
+import IO.Response;
 import itemsInArrea.Route;
 import managers.ColectionManager;
 
@@ -32,13 +33,14 @@ public class AveregeOfDistance extends Command {
      * @param args Additional arguments for the command (not used here)
      */
     @Override
-    public void execute(String[] args) {
+    public Response execute(String[] args) {
         long averDist = 0L;
         long elemAmount = colectionManager.getroutes().size();
 
         for (Route route : colectionManager.getroutes()) {
             averDist += route.getDistance() / elemAmount;
         }
-        System.out.println("Average distance = " + averDist);
+        Long newAverageDist = (Long) averDist;
+        return new Response(super.name, "Average distance = " + newAverageDist.toString());
     }
 }

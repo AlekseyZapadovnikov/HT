@@ -1,7 +1,11 @@
 package comands;
 
+import IO.Response;
 import managers.ColectionManager;
 import managers.CommandManager;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The Help class extends the {@link Command} class and provides functionality
@@ -32,9 +36,11 @@ public class Help extends Command {
      * @param args an array of String arguments (not used by this command)
      */
     @Override
-    public void execute(String[] args){
+    public Response execute(String[] args){
+        ArrayList<String> list = new ArrayList<>();
         for (String comand : commandManager.getCommands()){
-            System.out.println(commandManager.getCommandByName(comand));
+            list.add(commandManager.getCommandByName(comand).toString());
         }
+        return new Response(super.name, list);
     }
 }

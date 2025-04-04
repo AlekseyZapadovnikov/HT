@@ -1,5 +1,6 @@
 package comands;
 
+import IO.Response;
 import IO.RouteXMLWriter;
 import managers.ColectionManager;
 
@@ -43,14 +44,12 @@ public class Save extends Command {
      * @param args command line arguments (not used in this command).
      */
     @Override
-    public void execute(String[] args) {
-        System.out.println("Data will be saved in Saves.xml");
+    public Response execute(String[] args) {
         try {
             saver.writeRoutes(colectionManager.getroutes());
-            System.out.println("Data were saved successfully");
+            return new Response(super.name, "Data were saved successfully");
         } catch (IOException e) {
-            System.out.println("Having problems writing to a file");
-            throw new RuntimeException(e);
+            return new Response(e, "There was a problem writing to file");
         }
     }
 }

@@ -1,5 +1,6 @@
 package comands;
 
+import IO.Response;
 import managers.ColectionManager;
 
 /**
@@ -37,8 +38,7 @@ public class Info extends Command {
      * @param args an array of arguments (not used in this command)
      */
     @Override
-    public void execute(String[] args) {
-        System.out.println("Display information about the collection:");
-        System.out.println(colectionManager);
+    public Response execute(String[] args) {
+        return new Response(super.name, colectionManager.toString());
     }
 }

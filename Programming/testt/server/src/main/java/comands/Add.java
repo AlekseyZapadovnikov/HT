@@ -1,6 +1,7 @@
 package comands;
 
 
+import IO.Response;
 import itemsInArrea.Route;
 import managers.ColectionManager;
 
@@ -30,8 +31,9 @@ public class Add extends Command {
      * @param args String array of arguments (not used in this command)
      */
     @Override
-    public void execute(Object args) {
+    public Response execute(Object args) {
         Route route = (Route) args;
-            colectionManager.add(route);
+        colectionManager.add(route);
+        return new Response(super.name, "Route added to collection");
     }
 }

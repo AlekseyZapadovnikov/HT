@@ -1,5 +1,6 @@
 package comands;
 
+import IO.Response;
 import managers.ColectionManager;
 import itemsInArrea.Route;
 
@@ -33,7 +34,7 @@ public class CountByDistance extends Command {
      * @param args array of string arguments; the last element should be the distance to count by
      */
     @Override
-    public void execute(String[] args) {
+    public Response execute(String[] args) {
         try {
             long dist = Long.parseLong(args[args.length]);
 
@@ -43,9 +44,10 @@ public class CountByDistance extends Command {
                     counter++;
                 }
             }
-            System.out.println(counter);
+            Long newCounter = (Long) counter;
+            return new Response(super.name, "Result is" + newCounter.toString());
         } catch (IndexOutOfBoundsException e) {
-            System.out.println("you haven`t enter parameter 'distance'");
+            return new Response(e, "you haven`t enter parameter 'distance'");
         }
     }
 }

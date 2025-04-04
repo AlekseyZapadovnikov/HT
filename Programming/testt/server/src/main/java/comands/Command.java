@@ -1,5 +1,7 @@
 package comands;
 
+import IO.Response;
+
 /**
  * An abstract command with a name and description.
  * <p>
@@ -8,7 +10,7 @@ package comands;
  * </p>
  */
 public class Command {
-    private final String name;
+    final String name;
     private final String description;
 
     /**
@@ -27,8 +29,12 @@ public class Command {
      *
      * @param args an array of String arguments.
      */
-    public void execute(Object args){};
-    public void execute(String[] args){};
+    public Response execute(Object args){
+        return new Response();
+    };
+    public Response execute(String[] args){
+        return new Response();
+    }
     /**
      * Returns the name and usage of the command.
      *

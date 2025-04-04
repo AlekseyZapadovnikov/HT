@@ -1,5 +1,6 @@
 package comands;
 
+import IO.Response;
 import managers.ColectionManager;
 
 /**
@@ -36,12 +37,15 @@ public class RemoveHead extends Command {
      * @param args an array of command arguments (not used in this command)
      */
     @Override
-    public void execute(String[] args) {
+    public Response execute(String[] args) {
+        Response response;
         if (colectionManager.getroutes().isEmpty()){
-            System.out.println("Collection is empty");
+            response = new Response(super.name, "Collection is empty");
         } else{
-            System.out.println(colectionManager.getroutes().get(0));
+            Long id = (Long) colectionManager.getroutes().get(0).getId();
             colectionManager.remove(colectionManager.getroutes().get(0).getId());
+            response = new Response(super.name, "Element with id:" + id.toString() + "was deleted");
         }
+        return response;
     }
 }

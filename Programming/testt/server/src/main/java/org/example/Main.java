@@ -30,11 +30,11 @@ public class Main {
                 Request request = (Request) connectionManager.receiveData();
                 String commandName = request.getCommand();
                 if (request.isContainRoute()) {
-                    cm.getCommandByName(commandName).execute(request.getRoute());
+                    response = cm.getCommandByName(commandName).execute(request.getRoute());
                 } else {
-                    cm.getCommandByName(commandName).execute(request.getArgs());
+                    response = cm.getCommandByName(commandName).execute(request.getArgs());
                 }
-                response = control.giveResponse(commandName);
+//                response = control.giveResponse(commandName);
                 connectionManager.sendData(response);
             } catch (ClassNotFoundException e) {
                 response = new Response(e, "Class not found");
