@@ -1,5 +1,4 @@
-package org.example;
-import managers.*;
+package managers;
 import IO.RouteXMLScaner;
 import IO.RouteXMLWriter;
 import comands.Command;
@@ -22,8 +21,8 @@ import java.io.IOException;
  */
 public class Runner {
 
-    private ColectionManager colectionManager;
-    private CommandManager commandManager;
+    ColectionManager colectionManager;
+    CommandManager commandManager;
     private RouteXMLScaner xmlScaner;
     private RouteXMLWriter xmlWriter;
 

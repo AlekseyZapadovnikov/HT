@@ -4,7 +4,10 @@ import IO.Request;
 import IO.Response;
 import itemsInArrea.Route;
 import managers.CommandManager;
+import managers.ControlManager;
 import managers.ServerConnectionManager;
+
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class Main {
@@ -13,12 +16,13 @@ public class Main {
         connectionManager.start();
         connectionManager.acceptConnection();
         CommandManager cm = null;
+        ControlManager control = null;
         try {
-            Runner runner = new Runner();
-            runner.run();
-            cm = runner.getCommandManager();
+            control = new ControlManager();
+            control.run();
+            cm = control.getCommandManager();
         } catch (Exception e){
-            connectionManager.sendData("An error occurred while starting the server");
+            connectionManager.sendData(new Response(e, "An error occurred while starting the server"));
         }
         while (true){
             Response response;
@@ -27,18 +31,18 @@ public class Main {
                 String commandName = request.getCommand();
                 if (request.isContainRoute()) {
                     cm.getCommandByName(commandName).execute(request.getRoute());
+                } else {
+                    cm.getCommandByName(commandName).execute(request.getArgs());
                 }
-
+                response = control.giveResponse(commandName);
+                connectionManager.sendData(response);
             } catch (ClassNotFoundException e) {
-                response = new Response(e);
+                response = new Response(e, "Class not found");
+            } catch (FileNotFoundException e){
+                response = new Response(e, "There is no such file on the server");
             } catch (Exception e){
-                response = new Response(e);
+                response = new Response(e, "I give up");
             }
         }
-        // Пример обмена данными:
-        // NetworkMessage message = connectionManager.receiveData();
-        // connectionManager.sendData(new NetworkMessage("Response"));
-
-        //connectionManager.close();
     }
 }
