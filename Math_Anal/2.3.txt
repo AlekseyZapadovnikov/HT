@@ -1,0 +1,49 @@
+import numpy as np
+
+# Точное значение площади (при a = 1)
+exact_area = 3 / 2
+
+
+# Функция для вычисления r(theta) в полярных координатах (a = 1)
+def r(theta):
+    numerator = 3 * np.cos(theta) * np.sin(theta)
+    denominator = (np.cos(theta) + np.sin(theta)) * (1 - np.cos(theta) * np.sin(theta))
+    return numerator / denominator
+
+
+# Численное интегрирование методом средних прямоугольников
+def numerical_integration(n):
+    a, b = 0, np.pi / 4  # интегрируем от 0 до pi/4 и удваиваем результат
+    d_theta = (b - a) / n
+    total = 0
+
+    for i in range(n):
+        theta_mid = a + (i + 0.5) * d_theta  # середина отрезка
+        total += (r(theta_mid)) ** 2 * d_theta
+
+    return 2 * 0.5 * total  # множитель 2 из-за симметрии + формула площади
+
+
+# Вычисление для разных n
+ns = [10, 100, 1000]
+results = {}
+
+for n in ns:
+    numerical = numerical_integration(n)
+    error = abs(numerical - exact_area) / exact_area * 100
+    results[n] = (numerical, error)
+
+# Вывод результатов
+print(f"Точное значение площади: {exact_area:.6f}\n")
+print(f"{'n':<8} | {'Численный результат':<20} | {'Ошибка (%)':<10}")
+print("-" * 45)
+for n in ns:
+    num, err = results[n]
+    print(f"{n:<8} | {num:<20.6f} | {err:<10.4f}")
+
+    
+# n        | Численный результат  | Ошибка (%)
+# ---------------------------------------------
+# 10       | 1.500000             | 0.0000    
+# 100      | 1.500000             | 0.0000    
+# 1000     | 1.500000             | 0.0000  
