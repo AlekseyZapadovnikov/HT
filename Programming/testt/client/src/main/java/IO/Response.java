@@ -10,7 +10,7 @@ import java.util.List;
 public class Response implements NetworkMessage {
     private boolean isError = false;
     private Exception exception;
-    private String ErrorDescription;
+    private String errorDescription;
     private List<Route> routes;
     private Route route;
     private boolean isContainRoutes;
@@ -18,13 +18,11 @@ public class Response implements NetworkMessage {
     private boolean isEmpty = false;
     private String message = "";
     List<String> info;
-    private boolean isResponseList = false;
-    private ArrayList<Response> responseList;
 
     public Response(Exception e, String description) {
         isError = true;
         exception = e;
-        ErrorDescription = description;
+        errorDescription = description;
     }
 
     public Response(String commandName, LinkedList<Route> routes) {
@@ -58,6 +56,19 @@ public class Response implements NetworkMessage {
         this.message = message;
     }
 
+    @Override
+    public String toString(){
+        String s = "was executing command" + commandName + "\n";
+        if (!isEmpty){
+            if (isError){
+                s += "an error occurs when executing the command" + errorDescription;
+            } else {
+                if (isRespList)
+            }
+        }
+        return s;
+    }
+
     public boolean isError() {
         return isError;
     }
@@ -71,7 +82,7 @@ public class Response implements NetworkMessage {
     }
 
     public String getErrorDescription() {
-        return ErrorDescription;
+        return errorDescription;
     }
 
     public List<Route> getRoutes() {

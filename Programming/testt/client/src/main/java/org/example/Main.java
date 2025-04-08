@@ -1,6 +1,8 @@
 package org.example;
 
 import IO.Console;
+import IO.Request;
+import IO.Response;
 import managers.ClientConnectionManager;
 
 import java.io.IOException;
@@ -15,8 +17,16 @@ public class Main {
             connectionManager = new ClientConnectionManager("localhost", 1111);
             connectionManager.connect();
 
+            while (true){
+                Request request = console.readCommand();
+                connectionManager.sendData(request);
+                Response respone = (Response) connectionManager.receiveData();
+                console.printResponse(respone);
+            }
         } catch (IOException e) {
-            console.println("Ошибка подключения: " + e.getMessage());
+            console.println("Connection error: " + e.getMessage());
+        } catch (ClassNotFoundException e){
+            console.println("Class not found exeption happened, developer durachek");
         }
     }
 }

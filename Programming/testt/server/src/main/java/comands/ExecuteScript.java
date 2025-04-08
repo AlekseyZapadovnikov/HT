@@ -1,5 +1,6 @@
 package comands;
 
+import IO.Response;
 import managers.CommandManager;
 
 import java.io.File;
@@ -40,22 +41,18 @@ public class ExecuteScript extends Command {
      * @param args a single-element array containing the filename to read
      */
     @Override
-    public void execute(String[] args) {
+    public Response execute(String[] args) {
         File file = null;
         try {
             // Attempt to create a File object with the given filename
             file = new File("src\\main\\resources\\" + args[0]);
         } catch (IndexOutOfBoundsException e) {
-            System.out.println("you haven`t enter a file name");
-            return;
+            return  new Response(e, "you haven`t enter a file name");
         }
         try {
-            // Use a scanner to read the file line by line
             Scanner scanner = new Scanner(file);
             while (scanner.hasNextLine()) {
                 try {
-                    // Split a line into tokens: first token is the command,
-                    // subsequent tokens are arguments
                     String[] line = scanner.nextLine().split(" ");
                     String[] arguments = new String[line.length - 1];
                     for (int i = 1; i < line.length; i++) {
@@ -65,13 +62,13 @@ public class ExecuteScript extends Command {
                     command.execute(arguments);
                     System.out.println("\n");
                 } catch (Exception ex) {
-                    System.out.println("uncorrected command");
+                    return new Response(ex, "uncorrected command");
                 }
             }
             scanner.close();
         } catch (FileNotFoundException e) {
-            System.out.println("File not found");
-            System.out.println("File have to be in 'src\\main\\resources\\'");
+            return new Response(e, "File not found \n" +
+                    "File have to be in 'src\\main\\resources\\'");
         }
     }
 }

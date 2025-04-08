@@ -34,7 +34,7 @@ public class Main {
                 } else {
                     response = cm.getCommandByName(commandName).execute(request.getArgs());
                 }
-//                response = control.giveResponse(commandName);
+                response = control.giveResponse(commandName);
                 connectionManager.sendData(response);
             } catch (ClassNotFoundException e) {
                 response = new Response(e, "Class not found");
