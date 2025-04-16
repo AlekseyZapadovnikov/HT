@@ -2,7 +2,9 @@ package org.example;
 
 import IO.Request;
 import IO.Response;
-import itemsInArrea.Route;
+import comands.Command;
+import comands.Help;
+import comands.Show;
 import managers.CommandManager;
 import managers.ControlManager;
 import managers.ServerConnectionManager;
@@ -21,27 +23,42 @@ public class Main {
             control = new ControlManager();
             control.run();
             cm = control.getCommandManager();
-        } catch (Exception e){
+            Help help = new Help("1", "1", cm);
+            Response r = help.execute(new String[0]);
+            System.out.println(r);
+        } catch (Exception e) {
             connectionManager.sendData(new Response(e, "An error occurred while starting the server"));
         }
-        while (true){
-            Response response;
+        while (true) {
+            Response response = null;
             try {
+                System.out.println("Ожидание запроса...");
                 Request request = (Request) connectionManager.receiveData();
                 String commandName = request.getCommand();
-                if (request.isContainRoute()) {
-                    response = cm.getCommandByName(commandName).execute(request.getRoute());
+                Command command = cm.getCommandByName(commandName);
+
+                // Обработка команды
+                if (command == null) {
+                    response = new Response("Неизвестная команда: " + commandName);
+                } else if (request.isContainRoute()) {
+                    response = command.execute(request.getRoute());
                 } else {
-                    response = cm.getCommandByName(commandName).execute(request.getArgs());
+                    response = command.execute(request.getArgs());
                 }
-                response = control.giveResponse(commandName);
+
+                // Отправка ответа только здесь
                 connectionManager.sendData(response);
+                System.out.println("Ответ отправлен: " + response.getMessage());
+
             } catch (ClassNotFoundException e) {
-                response = new Response(e, "Class not found");
-            } catch (FileNotFoundException e){
-                response = new Response(e, "There is no such file on the server");
-            } catch (Exception e){
-                response = new Response(e, "I give up");
+                response = new Response(e, "Ошибка десериализации");
+            } catch (FileNotFoundException e) {
+                response = new Response(e, "Файл не найден");
+            } catch (IOException e) {
+                System.out.println("Клиент отключился: " + e.getMessage());
+                break;
+            } catch (Exception e) {
+                response = new Response(e, "Внутренняя ошибка сервера");
             }
         }
     }

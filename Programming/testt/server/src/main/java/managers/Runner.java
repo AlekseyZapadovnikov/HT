@@ -38,8 +38,8 @@ public class Runner {
      */
     public Runner() {
         try {
-            this.xmlScaner = new RouteXMLScaner(new File("src/main/resources/prog_lab_5_data.xml"));
-            this.xmlWriter = new RouteXMLWriter("src/main/resources/test.xml");
+            this.xmlScaner = new RouteXMLScaner(new File("C:\\Users\\Asus\\Desktop\\repo\\HT\\Programming\\testt\\server\\src\\main\\resources\\prog_lab_5_data.xml"));
+            this.xmlWriter = new RouteXMLWriter("C:\\Users\\Asus\\Desktop\\repo\\HT\\Programming\\testt\\server\\src\\main\\resources\\test.xml");
             colectionManager = new ColectionManager(this.xmlScaner, this.xmlWriter);
             commandManager = new CommandManager();
         } catch (IOException e) {
@@ -131,19 +131,19 @@ public class Runner {
         this.commandManager.addCommand(save);
 
         // execute_script file_name
-        Command executeScript = new ExecuteScript(
-                "execute_script",
-                "считать и исполнить скрипт из указанного файла",
-                this.commandManager
-        );
-        this.commandManager.addCommand(executeScript);
+//        Command executeScript = new ExecuteScript(
+//                "execute_script",
+//                "считать и исполнить скрипт из указанного файла",
+//                this.commandManager
+//        );
+//        this.commandManager.addCommand(executeScript);
 
         // exit
-        Command exit = new Exit(
-                "exit",
-                "завершить программу (без сохранения в файл)"
-        );
-        this.commandManager.addCommand(exit);
+//        Command exit = new Exit(
+//                "exit",
+//                "завершить программу (без сохранения в файл)"
+//        );
+//        this.commandManager.addCommand(exit);
 
         // head
         Command head = new Head(

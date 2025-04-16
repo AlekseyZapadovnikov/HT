@@ -14,6 +14,7 @@ public class Request implements NetworkMessage {
 
     public Request(String command, String[] args) {
         this.command = command;
+        this.args = args;
         argsContain = true;
     }
 

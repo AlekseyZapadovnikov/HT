@@ -10,27 +10,30 @@ import java.util.List;
 public class Response implements NetworkMessage {
     private boolean isError = false;
     private Exception exception;
-    private String ErrorDescription;
-    private List<Route> routes;
+    private String errorDescription;
+    private LinkedList<Route> routes;
     private Route route;
     private boolean isContainRoutes;
     private String commandName;
     private boolean isEmpty = false;
     private String message = "";
-    List<String> info;
-    private boolean isResponseList = false;
-    private ArrayList<Response> responseList;
+    ArrayList<String> info;
 
     public Response(Exception e, String description) {
         isError = true;
         exception = e;
-        ErrorDescription = description;
+        errorDescription = description;
     }
 
     public Response(String commandName, LinkedList<Route> routes) {
-        routes = routes;
+        this.routes = routes;
         this.commandName = commandName;
         isContainRoutes = true;
+    }
+
+    public Response(String commandName, ArrayList<String> info) {
+        this.info = info;
+        this.commandName = commandName;
     }
 
     public Response(String commandName, Route route) {
@@ -44,11 +47,6 @@ public class Response implements NetworkMessage {
         this.message = message;
     }
 
-    public Response(String name, ArrayList<String> lst) {
-        commandName = name;
-        info = lst;
-    }
-
     public Response() {
         isEmpty = true;
     }
@@ -57,6 +55,21 @@ public class Response implements NetworkMessage {
     public Response(String message) {
         this.message = message;
     }
+
+    @Override
+    public String toString(){
+        String s = "was executing command " + commandName + "\n";
+        if (!isEmpty){
+            if (isError){
+                s += "an error occurs when executing the command \n" + errorDescription + "\n";
+            } else {
+                s += message;
+                s += "\ncommand completed successfully";
+            }
+        }
+        return s;
+    }
+
 
     public boolean isError() {
         return isError;
@@ -71,7 +84,7 @@ public class Response implements NetworkMessage {
     }
 
     public String getErrorDescription() {
-        return ErrorDescription;
+        return errorDescription;
     }
 
     public List<Route> getRoutes() {

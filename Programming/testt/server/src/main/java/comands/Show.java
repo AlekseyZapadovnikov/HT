@@ -36,10 +36,7 @@ public class Show extends Command {
      */
     @Override
     public Response execute(String[] args) {
-        LinkedList<Route> routes = new LinkedList<>();
-        for (Route route : colectionManager.getroutes()) {
-            routes.add(route);
-        }
-        return new Response(super.name, routes);
+        System.out.println(colectionManager.getroutes());
+        return new Response(super.name, colectionManager.getroutes());
     }
 }
