@@ -6,7 +6,7 @@ import java.time.LocalDate;
 public class Route implements Validate, Comparable<Route>, Serializable {
     private static final long serialVersionUID = 1L; // Рекомендуется добавить
 
-    private long id;
+    public long id;
     private String name;
     private Coordinates coordinates;
     private LocalDate creationDate;

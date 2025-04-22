@@ -14,7 +14,7 @@ import java.util.LinkedList;
  * </p>
  */
 public class Show extends Command {
-    private final ColectionManager colectionManager;
+    public ColectionManager colectionManager;
 
     /**
      * Constructs a new Show command.
@@ -36,7 +36,6 @@ public class Show extends Command {
      */
     @Override
     public Response execute(String[] args) {
-        System.out.println(colectionManager.getroutes());
         return new Response(super.name, colectionManager.getroutes());
     }
 }

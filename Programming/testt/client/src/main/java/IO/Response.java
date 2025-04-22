@@ -1,13 +1,13 @@
 package IO;
 
 import itemsInArrea.Route;
-import managers.NetworkMessage;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Response implements NetworkMessage {
+public class Response implements Serializable {
     private boolean isError = false;
     private Exception exception;
     private String errorDescription;
@@ -18,6 +18,7 @@ public class Response implements NetworkMessage {
     private boolean isEmpty = false;
     private String message = "";
     ArrayList<String> info;
+
 
     public Response(Exception e, String description) {
         isError = true;
@@ -57,14 +58,20 @@ public class Response implements NetworkMessage {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         String s = "was executing command " + commandName + "\n";
-        if (!isEmpty){
-            if (isError){
-                s += "an error occurs when executing the command \n" + errorDescription + "\n";
-            } else {
-                s += message;
-                s += "\ncommand completed successfully";
+        if (isContainRoutes) {
+            for (Route route : routes) {
+                s += route.toString() + "\n";
+            }
+        } else {
+            if (!isEmpty) {
+                if (isError) {
+                    s += "an error occurs when executing the command \n" + errorDescription + "\n";
+                } else {
+                    s += message;
+                    s += "\ncommand completed successfully";
+                }
             }
         }
         return s;

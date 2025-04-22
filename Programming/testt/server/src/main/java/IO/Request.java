@@ -1,9 +1,10 @@
 package IO;
 
 import itemsInArrea.Route;
-import managers.NetworkMessage;
 
-public class Request implements NetworkMessage {
+import java.io.Serializable;
+
+public class Request implements Serializable {
     private String command;
     private String[] args;
     private Route route;
@@ -11,17 +12,19 @@ public class Request implements NetworkMessage {
     private boolean argsContain = false;
     private boolean isError = false;
     private Exception exception;
+    private static final long serialVersionUID = 1L;
 
     public Request(String command, String[] args) {
         this.command = command;
-        argsContain = true;
+        this.args    = args;
+        this.argsContain = args != null && args.length > 0;
     }
 
     public Request(String command, Route route){
         this.command = command;
-        this.route = route;
-        containRoute = true;
-        argsContain = true;
+        this.route   = route;
+        this.containRoute = route != null;
+        this.argsContain  = false;
     }
 
     public Request(String command){

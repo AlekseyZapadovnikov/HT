@@ -27,7 +27,7 @@ public class ColectionManager {
      */
     HashMap<Long, Route> routesMap = new HashMap<>();
 
-    private int currentId = 1;
+    long currentId = 5;
     private LocalDateTime lastInitTime;
     private LocalDateTime lastUpdateTime;
     private LocalDateTime lastSaveTime;
@@ -107,8 +107,12 @@ public class ColectionManager {
      * @return a long value representing a free ID
      */
     public long getFreeId() {
-        while (byId(++currentId) != null) ;
-        return currentId;
+        long newId = currentId + 1;
+        while (byId(newId) != null) {
+            newId++;
+        }
+        currentId = newId; // Обновляем currentId до последнего найденного свободного ID
+        return newId;
     }
 
     /**
@@ -118,10 +122,18 @@ public class ColectionManager {
      * @return {@code true} if added, {@code false} otherwise
      */
     public boolean add(Route a) {
-        if (isСontain(a)) return false;
-        routesMap.put(a.getId(), a);
+        System.out.println("[DEBUG] Попытка добавления объекта: " + a);
+        if (isСontain(a)) {
+            System.out.println("[DEBUG] Объект уже существует в коллекции.");
+            return false;
+        }
+        long newId = getFreeId();
+        System.out.println("[DEBUG] Присвоен ID: " + newId);
+        a.setId(newId);
+        routesMap.put(newId, a);
         routes.add(a);
         update();
+        System.out.println("[DEBUG] Объект успешно добавлен. Текущий размер коллекции: " + routes.size());
         return true;
     }
 
