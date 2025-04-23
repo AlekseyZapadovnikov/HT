@@ -173,6 +173,7 @@ public class ColectionManager {
     public void clear(){
         routes.clear();
         routesMap.clear();
+        currentId = 0;
     }
 
     /**

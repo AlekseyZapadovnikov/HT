@@ -8,7 +8,7 @@ import IO.FileReader;
 
 import java.io.*;
 import java.net.SocketException;
-import java.util.Arrays;
+
 
 public class Client {
     private final Console console = new Console();
@@ -27,16 +27,18 @@ public class Client {
         static final String SCRIPT_WORD = "execute_script";
     }
 
-    private void doRequest(String commandName, String[] arguments) throws IOException{
+    private void doRequest() throws IOException{
         try{
             network.write(userRequest);
             Response serverResponse = (Response) network.read();
             while (serverResponse == null){
                 serverResponse = (Response) network.read();
             }
-            String serverMessage = serverResponse.getMessage();
-            if(!serverMessage.isEmpty()){
-                console.println(serverResponse.getMessage());
+//            String serverMessage = serverResponse.getMessage();
+            if(!serverResponse.isEmpty()){
+                console.printResponse(serverResponse);
+            } else {
+                System.out.println("Server`s empty answer");
             }
         } catch (ClassNotFoundException e){
             console.println("Deserialization error: " + e.getMessage());
@@ -75,10 +77,11 @@ public class Client {
         if (Config.EXIT_WORD.equalsIgnoreCase(line)) {
             return false;
         }
-        userRequest = console.readCommand();
         if (Config.SCRIPT_WORD.equals(userRequest.getCommand())){
             scriptMode(userRequest.getArgs());
         }
+
+        doRequest();
         return isRunning;
     }
 
@@ -90,11 +93,11 @@ public class Client {
 
             console.println("Enter command (or 'exit' to quit):");
             while (isRunning) {
-                String line = console.input();
-                if(line == null){
+                userRequest = console.readCommand();
+                if(userRequest == null){
                     continue;
                 }
-                isRunning = consoleMode(line, isRunning);
+                isRunning = consoleMode(userRequest.getCommand(), isRunning);
             }
             network.close();
         }catch (SocketException e){

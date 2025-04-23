@@ -4,6 +4,7 @@ import comands.Command;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -84,6 +85,12 @@ public class CommandManager {
             history.remove(history.get(0));
         }
         history.add(command);
+    }
+
+    public boolean hasCommand(String commandName) {
+        return commands.keySet()
+                .stream()
+                .anyMatch(key -> Objects.equals(key, commandName));
     }
 
     /**

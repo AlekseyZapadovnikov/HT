@@ -1,11 +1,14 @@
 package managers;
 import IO.RouteXMLScaner;
 import IO.RouteXMLWriter;
+import IO.ServerConsole;
 import comands.Command;
 import comands.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.logging.Level;
 
 /**
  * Initializes and manages the application's main components:
@@ -25,7 +28,7 @@ public class Runner {
     CommandManager commandManager;
     private RouteXMLScaner xmlScaner;
     private RouteXMLWriter xmlWriter;
-
+    private ServerConsole serverConsole;
     /**
      * Constructs a {@code Runner}, initializing the XML scanner and writer,
      * creating a {@link ColectionManager}, and instantiating a {@link CommandManager}.
@@ -42,6 +45,7 @@ public class Runner {
             this.xmlWriter = new RouteXMLWriter("C:\\Users\\Asus\\Desktop\\repo\\HT\\Programming\\testt\\server\\src\\main\\resources\\test.xml");
             colectionManager = new ColectionManager(this.xmlScaner, this.xmlWriter);
             commandManager = new CommandManager();
+            serverConsole = new ServerConsole();
         } catch (IOException e) {
             System.out.println("file not found");
             throw new RuntimeException(e);
@@ -194,6 +198,30 @@ public class Runner {
         this.commandManager.addCommand(printAscending);
     }
 
+//    public void processServerCommand(String line){
+//        String [] tokens = line.split(" ");
+//        String commandName = tokens[0].toLowerCase();
+//        String [] arguments = {};
+//        if(tokens.length > 1){
+//            arguments = Arrays.copyOfRange(tokens, 1, tokens.length);
+//        }
+//        Command command = commandManager.getCommandByName(commandName);
+//        if(command == null){
+//            serverConsole.log(Level.WARNING, "The command doesn't exist");
+//        }else{
+//            String response = command.execute(arguments);
+//            serverConsole.println(response);
+//        }
+//    }
+
+    public void closeApp(){
+        try {
+            colectionManager.saveRoutes();
+        }catch (IOException e){
+            serverConsole.log(Level.WARNING, "Collection can't be saved");
+        }
+    }
+
     /**
      * Gets the underlying {@link ColectionManager}, which handles the stored routes.
      *
@@ -228,5 +256,9 @@ public class Runner {
      */
     public CommandManager getCommandManager() {
         return commandManager;
+    }
+
+    public ServerConsole getServerConsole() {
+        return serverConsole;
     }
 }

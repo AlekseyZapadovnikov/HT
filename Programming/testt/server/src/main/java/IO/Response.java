@@ -18,6 +18,7 @@ public class Response implements Serializable {
     private boolean isEmpty = false;
     private String message = "";
     ArrayList<String> info;
+    private boolean isSimpleMessage = false;
 
 
     public Response(Exception e, String description) {
@@ -55,6 +56,7 @@ public class Response implements Serializable {
 
     public Response(String message) {
         this.message = message;
+        isSimpleMessage = true;
     }
 
     @Override
@@ -120,5 +122,9 @@ public class Response implements Serializable {
 
     public List<String> getInfo() {
         return info;
+    }
+
+    public boolean isSimpleMessage() {
+        return isSimpleMessage;
     }
 }

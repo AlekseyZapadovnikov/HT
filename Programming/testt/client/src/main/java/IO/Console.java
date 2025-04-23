@@ -8,10 +8,9 @@ import java.util.Scanner;
 /**
  * Ввод-вывод в консоль
  */
-public class Console  extends ConsoleQuest {
+public class Console extends ConsoleQuest {
     private final Scanner scanner = new Scanner(System.in);
     private static final String[] ROUTE_COMMANDS = {"add", "update"};
-
 
     public Request readCommand() {
         System.out.print("\nВведите команду: ");
@@ -26,14 +25,14 @@ public class Console  extends ConsoleQuest {
         String[] parts = line.trim().split("\\s+");
         String command = parts[0].toLowerCase();
         String[] args = null;
-        if (parts.length > 1){
+        if (parts.length > 1) {
             args = Arrays.copyOfRange(parts, 1, parts.length);
         }
 
         if (Arrays.asList(ROUTE_COMMANDS).contains(command)) {
             return new Request(command, askRoute());
         }
-        if (args != null){
+        if (args != null) {
             return new Request(command, args);
         }
         return new Request(command, new String[0]);
@@ -44,41 +43,46 @@ public class Console  extends ConsoleQuest {
             System.out.println("Пустой ответ от сервера");
             return;
         }
-
-        System.out.println("\nРезультат выполнения команды:");
-        if (response.isError()) {
-            System.out.println("[ОШИБКА] " + response.getException());
-        } else if (response.isContainRoutes()) {
-            response.getRoutes().stream()
-                    .forEach(route -> System.out.println(route.toString()));
-        } else if (response.getInfo() != null) {
-            response.getInfo().forEach(System.out::println);
-        } else {
+        if (response.isSimpleMessage()) {
             System.out.println(response.getMessage());
+        } else {
+            System.out.println("\nРезультат выполнения команды:");
+            if (response.isError()) {
+                System.out.println("[ОШИБКА] " + response.getException());
+            } else if (response.isContainRoutes()) {
+                response.getRoutes().stream()
+                        .forEach(route -> System.out.println(route.toString()));
+            } else if (response.getInfo() != null) {
+                response.getInfo().forEach(System.out::println);
+            } else {
+                System.out.println(response.getMessage());
+            }
         }
     }
 
-    public void println(String s){
+    public void println(String s) {
         System.out.println(s);
     }
 
     /**
      * Вывод без переноса
+     *
      * @param obj объект для вывода
      */
-    public void print(Object obj){
+    public void print(Object obj) {
         System.out.print(obj);
     }
 
     /**
      * Вывод с переносом
+     *
      * @param obj объект для вывода
      */
-    public void println(Object obj){
+    public void println(Object obj) {
         System.out.println(obj);
     }
 
-    public void warn(String message){
+    public void warn(String message) {
         System.err.println(message);
     }
 
@@ -86,43 +90,44 @@ public class Console  extends ConsoleQuest {
      * Считывает строку из потока ввода
      * NoSuchElementException если введено ctrl+C
      * NullPointerException если ничего не введено
+     *
      * @return считанная строка
      */
-    public String input() throws IOException{
+    public String input() throws IOException {
         print("> ");
-        try{
+        try {
             String inp = scanner.nextLine();
             return inp == null || inp.isEmpty() ? null : inp.trim();
-        }catch (NoSuchElementException e){
+        } catch (NoSuchElementException e) {
             throw new IOException();
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
             return null;
         }
     }
 
-    public Long parseLong(String line){
-        if(line == null){
+    public Long parseLong(String line) {
+        if (line == null) {
             return null;
         }
         return Long.parseLong(line);
     }
 
-    public Double parseDouble(String line){
-        if(line == null){
+    public Double parseDouble(String line) {
+        if (line == null) {
             return null;
         }
         return Double.parseDouble(line);
     }
 
-    public Float parseFloat(String line){
-        if(line == null){
+    public Float parseFloat(String line) {
+        if (line == null) {
             return null;
         }
         return Float.parseFloat(line);
     }
 
-    public Integer parseInteger(String line){
-        if(line == null){
+    public Integer parseInteger(String line) {
+        if (line == null) {
             return null;
         }
         return Integer.parseInt(line);
