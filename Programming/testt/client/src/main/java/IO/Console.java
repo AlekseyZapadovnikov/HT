@@ -1,5 +1,7 @@
 package IO;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
@@ -9,21 +11,42 @@ import java.util.Scanner;
  * Ввод-вывод в консоль
  */
 public class Console extends ConsoleQuest {
-    private final Scanner scanner = new Scanner(System.in);
+    private Scanner scanner;
     private static final String[] ROUTE_COMMANDS = {"add", "update"};
+    private boolean readFile = false;
 
-    public Request readCommand() {
-        System.out.print("\nВведите команду: ");
-        return parseLine(scanner.nextLine());
+
+    public Console() {
+        scanner = new Scanner(System.in);
     }
 
-    public Request parseLine(String line) {
+    public Request readCommand() {
+        if (!readFile) {
+            System.out.print("\nВведите команду: ");
+            return parseLine(scanner.nextLine());
+        } else {
+            if (scanner.hasNextLine()){
+                return parseLine(scanner.nextLine());
+            } else {
+                return new Request("end");
+            }
+        }
+
+    }
+
+    public String nextLine(){
+        return scanner.nextLine();
+    }
+
+    public static Request parseLine(String line) {
         if (line == null || line.trim().isEmpty()) {
             return new Request("");
         }
 
+
         String[] parts = line.trim().split("\\s+");
         String command = parts[0].toLowerCase();
+
         String[] args = null;
         if (parts.length > 1) {
             args = Arrays.copyOfRange(parts, 1, parts.length);
@@ -38,6 +61,11 @@ public class Console extends ConsoleQuest {
         return new Request(command, new String[0]);
     }
 
+    public String parseCommand(String line){
+        String[] parts = line.trim().split("\\s+");
+        String command = parts[0].toLowerCase();
+        return command;
+    }
     public void printResponse(Response response) {
         if (response == null) {
             System.out.println("Пустой ответ от сервера");
@@ -57,6 +85,12 @@ public class Console extends ConsoleQuest {
             } else {
                 System.out.println(response.getMessage());
             }
+        }
+    }
+
+    public void closeFile() {
+        if (readFile) {
+            scanner.close();
         }
     }
 

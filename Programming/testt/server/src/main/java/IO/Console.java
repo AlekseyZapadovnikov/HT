@@ -36,6 +36,7 @@ public class Console {
      * NullPointerException если ничего не введено
      * @return считанная строка
      */
+
     public String input() throws IOException{
         print("> ");
         try{

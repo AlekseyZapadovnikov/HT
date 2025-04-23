@@ -27,8 +27,9 @@ public class Client {
         static final String SCRIPT_WORD = "execute_script";
     }
 
-    private void doRequest() throws IOException{
+    private void doRequest(String line) throws IOException{
         try{
+            userRequest = Console.parseLine(line);
             network.write(userRequest);
             Response serverResponse = (Response) network.read();
             while (serverResponse == null){
@@ -60,7 +61,7 @@ public class Client {
         }
 
         boolean isScriptRunning = true;
-        while (isScriptRunning){
+        while (reader.hasNextLine()){
             String line = reader.nextLine();
             if (line == null){
                 break;
@@ -72,16 +73,17 @@ public class Client {
             isScriptRunning = consoleMode(line, isScriptRunning);
         }
     }
-
+// TUT!!!!!!
     private boolean consoleMode(String line, boolean isRunning) throws IOException{
-        if (Config.EXIT_WORD.equalsIgnoreCase(line)) {
+        String command = console.parseCommand(line);
+        if (Config.EXIT_WORD.equalsIgnoreCase(command)) {
             return false;
         }
-        if (Config.SCRIPT_WORD.equals(userRequest.getCommand())){
+        if (Config.SCRIPT_WORD.equals(command)){
             scriptMode(userRequest.getArgs());
         }
 
-        doRequest();
+        doRequest(line);
         return isRunning;
     }
 
@@ -93,10 +95,11 @@ public class Client {
 
             console.println("Enter command (or 'exit' to quit):");
             while (isRunning) {
-                userRequest = console.readCommand();
-                if(userRequest == null){
+                String line = console.nextLine();
+                if(line == null){
                     continue;
                 }
+                userRequest = Console.parseLine(line);
                 isRunning = consoleMode(userRequest.getCommand(), isRunning);
             }
             network.close();
@@ -108,4 +111,3 @@ public class Client {
         }
     }
 }
-

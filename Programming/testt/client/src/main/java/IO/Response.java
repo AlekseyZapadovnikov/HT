@@ -39,9 +39,10 @@ public class Response implements Serializable {
     }
 
     public Response(String commandName, Route route) {
-        isContainRoutes = true;
         this.route = route;
-
+        routes = new LinkedList<Route>();
+        this.routes.add(route);
+        isContainRoutes = true;
     }
 
     public Response(String commandName, String message) {

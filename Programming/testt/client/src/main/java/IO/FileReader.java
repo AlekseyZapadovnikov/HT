@@ -8,33 +8,29 @@ import java.util.Scanner;
 /**
  * Организует чтение данных из файла
  */
-public class FileReader implements Reader {
+public class FileReader {
     private File file;
     private Scanner reader;
+    private final String SURCE_PATH = "client\\src\\main\\resources\\";
 
 
     public FileReader(String fileName) throws FileNotFoundException {
-        this.file = new File(fileName);
-        this.reader = new Scanner(file);
+        File file = new File(SURCE_PATH + fileName);
+        reader = new Scanner(file);
     }
 
-    public String nextLine(){
-        try{
-            return reader.nextLine().trim();
-        }catch (NoSuchElementException e){
-            return null;
-        }
+    public boolean hasNextLine(){
+        return reader.hasNextLine();
     }
 
-    public String read(){
-        String s = "";
-        while (true){
-            try{
-                s += reader.nextLine().trim();
-            }catch (NoSuchElementException e){
-                break;
-            }
-        }
-        return s;
+    public Request readCommand(){
+        String line = reader.nextLine();
+        Request fileRequest = Console.parseLine(line);
+        return fileRequest;
     }
+
+    public String nextLine() {
+        return reader.nextLine();
+    }
+
 }
