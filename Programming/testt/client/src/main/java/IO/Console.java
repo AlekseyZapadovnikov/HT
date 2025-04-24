@@ -1,25 +1,32 @@
 package IO;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 /**
- * Ввод-вывод в консоль
+ * Класс для обработки консольного ввода-вывода.
+ * Наследует функциональность класса ConsoleQuest и добавляет
+ * методы для чтения команд, их обработки и вывода результатов.
  */
 public class Console extends ConsoleQuest {
     private Scanner scanner;
     private static final String[] ROUTE_COMMANDS = {"add", "update"};
     private boolean readFile = false;
 
-
+    /**
+     * Конструктор по умолчанию. Инициализирует Scanner для чтения из System.in.
+     */
     public Console() {
         scanner = new Scanner(System.in);
     }
 
+    /**
+     * Читает команду из ввода (консоли или файла).
+     *
+     * @return объект Request, содержащий команду и аргументы
+     */
     public Request readCommand() {
         if (!readFile) {
             System.out.print("\nВведите команду: ");
@@ -31,18 +38,27 @@ public class Console extends ConsoleQuest {
                 return new Request("end");
             }
         }
-
     }
 
+    /**
+     * Читает следующую строку из ввода.
+     *
+     * @return следующая строка ввода
+     */
     public String nextLine(){
         return scanner.nextLine();
     }
 
+    /**
+     * Парсит строку ввода в объект Request.
+     *
+     * @param line строка для парсинга
+     * @return объект Request с командой и аргументами
+     */
     public static Request parseLine(String line) {
         if (line == null || line.trim().isEmpty()) {
             return new Request("");
         }
-
 
         String[] parts = line.trim().split("\\s+");
         String command = parts[0].toLowerCase();
@@ -61,11 +77,23 @@ public class Console extends ConsoleQuest {
         return new Request(command, new String[0]);
     }
 
+    /**
+     * Извлекает команду из строки ввода.
+     *
+     * @param line строка ввода
+     * @return извлеченная команда
+     */
     public String parseCommand(String line){
         String[] parts = line.trim().split("\\s+");
         String command = parts[0].toLowerCase();
         return command;
     }
+
+    /**
+     * Выводит ответ от сервера в консоль.
+     *
+     * @param response объект Response для вывода
+     */
     public void printResponse(Response response) {
         if (response == null) {
             System.out.println("Пустой ответ от сервера");
@@ -88,18 +116,26 @@ public class Console extends ConsoleQuest {
         }
     }
 
+    /**
+     * Закрывает файл, если чтение производилось из файла.
+     */
     public void closeFile() {
         if (readFile) {
             scanner.close();
         }
     }
 
+    /**
+     * Выводит строку с переносом.
+     *
+     * @param s строка для вывода
+     */
     public void println(String s) {
         System.out.println(s);
     }
 
     /**
-     * Вывод без переноса
+     * Выводит объект без переноса строки.
      *
      * @param obj объект для вывода
      */
@@ -108,7 +144,7 @@ public class Console extends ConsoleQuest {
     }
 
     /**
-     * Вывод с переносом
+     * Выводит объект с переносом строки.
      *
      * @param obj объект для вывода
      */
@@ -116,16 +152,20 @@ public class Console extends ConsoleQuest {
         System.out.println(obj);
     }
 
+    /**
+     * Выводит предупреждающее сообщение в stderr.
+     *
+     * @param message сообщение для вывода
+     */
     public void warn(String message) {
         System.err.println(message);
     }
 
     /**
-     * Считывает строку из потока ввода
-     * NoSuchElementException если введено ctrl+C
-     * NullPointerException если ничего не введено
+     * Считывает строку из потока ввода с приглашением "> ".
      *
-     * @return считанная строка
+     * @return считанная строка (null если ввод пустой)
+     * @throws IOException если введено Ctrl+C (NoSuchElementException)
      */
     public String input() throws IOException {
         print("> ");
@@ -139,6 +179,12 @@ public class Console extends ConsoleQuest {
         }
     }
 
+    /**
+     * Парсит строку в Long.
+     *
+     * @param line строка для парсинга
+     * @return Long значение или null если строка null
+     */
     public Long parseLong(String line) {
         if (line == null) {
             return null;
@@ -146,6 +192,12 @@ public class Console extends ConsoleQuest {
         return Long.parseLong(line);
     }
 
+    /**
+     * Парсит строку в Double.
+     *
+     * @param line строка для парсинга
+     * @return Double значение или null если строка null
+     */
     public Double parseDouble(String line) {
         if (line == null) {
             return null;
@@ -153,6 +205,12 @@ public class Console extends ConsoleQuest {
         return Double.parseDouble(line);
     }
 
+    /**
+     * Парсит строку в Float.
+     *
+     * @param line строка для парсинга
+     * @return Float значение или null если строка null
+     */
     public Float parseFloat(String line) {
         if (line == null) {
             return null;
@@ -160,6 +218,12 @@ public class Console extends ConsoleQuest {
         return Float.parseFloat(line);
     }
 
+    /**
+     * Парсит строку в Integer.
+     *
+     * @param line строка для парсинга
+     * @return Integer значение или null если строка null
+     */
     public Integer parseInteger(String line) {
         if (line == null) {
             return null;

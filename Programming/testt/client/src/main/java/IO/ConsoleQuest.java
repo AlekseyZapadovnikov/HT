@@ -1,6 +1,5 @@
 package IO;
 
-
 import itemsInArrea.Coordinates;
 import itemsInArrea.Location;
 import itemsInArrea.Route;
@@ -8,13 +7,26 @@ import itemsInArrea.Route;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
-
+/**
+ * Класс для взаимодействия с пользователем через консоль.
+ * Предоставляет методы для ввода данных о маршруте (Route),
+ * местоположении (Location) и координатах (Coordinates).
+ */
 public class ConsoleQuest {
 
-
+    /**
+     * Статический Scanner для чтения ввода пользователя
+     */
     static final Scanner scanner = new Scanner(System.in);
 
-
+    /**
+     * Запрашивает у пользователя данные для создания нового маршрута (Route).
+     * Включает в себя имя маршрута, координаты, местоположения "откуда" и "куда",
+     * а также расстояние.
+     *
+     * @return новый объект Route с введенными пользователем данными
+     *         или null, если произошла ошибка ввода
+     */
     public static Route askRoute() {
         try {
             System.out.println("pls, enter information about new Route");
@@ -59,7 +71,6 @@ public class ConsoleQuest {
             System.out.println("enter info about 'from' Location");
             Location locationFrom = askLocation();
 
-
             return new Route(name, coordinates, locationTo, distance, locationFrom);
 
         } catch (NoSuchElementException | IllegalStateException e) {
@@ -68,7 +79,13 @@ public class ConsoleQuest {
         }
     }
 
-
+    /**
+     * Запрашивает у пользователя данные для создания местоположения (Location).
+     * Включает координаты (x - float, y - long) и имя местоположения.
+     *
+     * @return новый объект Location с введенными пользователем данными
+     *         или null, если произошла ошибка ввода
+     */
     public static Location askLocation() {
         try {
             // Read X (float)
@@ -102,7 +119,6 @@ public class ConsoleQuest {
                 }
             }
 
-
             String name;
             while (true) {
                 System.out.print("name: ");
@@ -125,7 +141,13 @@ public class ConsoleQuest {
         }
     }
 
-
+    /**
+     * Запрашивает у пользователя координаты (Coordinates).
+     * Включает значения x (float) и y (float).
+     *
+     * @return новый объект Coordinates с введенными пользователем данными
+     *         или null, если произошла ошибка ввода
+     */
     public static Coordinates askCoordinates() {
         try {
             System.out.println("enter info about coordination");
@@ -170,7 +192,12 @@ public class ConsoleQuest {
         }
     }
 
-    public static Scanner getScanner(){
+    /**
+     * Возвращает Scanner, используемый для ввода данных.
+     *
+     * @return объект Scanner, используемый для чтения пользовательского ввода
+     */
+    public static Scanner getScanner() {
         return scanner;
     }
 }
