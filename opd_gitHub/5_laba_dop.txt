@@ -1,0 +1,15 @@
+
+
+
+
+mod_60: ; хочу чтобы эта функция клала на стек значение остатка от деления на 60
+	st temp_ost
+	sub CONST_60
+	bpl mod_60
+	ld temp_ost
+	push
+	ret
+	temp_ost: word 0x0000
+
+
+CONST_60: word 0x003С
