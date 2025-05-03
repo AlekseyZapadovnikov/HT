@@ -1,15 +1,70 @@
+org 0x0020
 
+INPUT_LOOP:
+	in 7
+	and #0x40
+	beq INPUT_LOOP
+	in 6
+	swab
+	st first_part
 
+INPUT_LOOP2:
+	in 7
+	and #0x40
+	beq INPUT_LOOP2
+	in 6
+	add first_part
+	st input_seconds
+	
+	
+CALCULATE:
+	call MOD_3600
+	st ans_hours
+	ld input_seconds
+	sub temp_ost
+	call MOD_60
+	st ans_minuts
+	sub temp_ost1
+	st ans_seconds
 
+PRINT_ANS:
+	ld ans_hours
+	out 0xC
+	hlt
+	
 
-mod_60: ; хочу чтобы эта функция клала на стек значение остатка от деления на 60
+MOD_3600:
 	st temp_ost
-	sub CONST_60
-	bpl mod_60
+	or (hours_counter)+
 	ld temp_ost
-	push
+	sub const_3600
+	bpl MOD_3600
+	ld hours_counter
+	st global_ost
 	ret
 	temp_ost: word 0x0000
+	hours_counter: word 0xFFFF
+
+MOD_60:
+	st temp_ost1
+	or (min_counter)+
+	ld temp_ost1
+	sub const_60
+	bpl MOD_60
+	ld temp_ost1
+	st global_ost
+	ret
+	temp_ost1: word 0x0000
+	min_counter: word 0xFFFF
 
 
-CONST_60: word 0x003С
+
+
+const_60: word 0x003C
+const_3600: word 0x0E10
+global_ost: word 0x0000
+input_seconds: word 0x0000
+first_part: word 0x0000
+ans_seconds: word 0x0000
+ans_minuts: word 0x0000
+ans_hours: word 0x0000
