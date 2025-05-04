@@ -1,5 +1,8 @@
 org 0x0020
 
+ld #0
+out 0xC
+
 INPUT_LOOP:
 	in 7
 	and #0x40
@@ -27,13 +30,27 @@ CALCULATE:
 	st ans_seconds
 
 
-PRINT_ANS:
+PRINT_HOURS:
 	ld ans_hours
 	add const_char
 	out 0xC
-	ld const_ch
+	ld #0x68
+	out 0xC
+	ld #0x3A
 	out 0xC
 	
+
+PRINT_MIN:
+	ld ans_minuts
+	cmp const_10
+	bpl DD_MIN
+	add const_char
+	out 0xC
+	ld #0x6D
+	out 0xC
+	jump PRINT_SEC
+
+DD_MIN:
 	ld ans_minuts
 	call MOD_10
 	add const_char
@@ -41,7 +58,25 @@ PRINT_ANS:
 	ld temp_ost2
 	add const_char
 	out 0xC
-	
+
+
+PRINT_SEC:
+	ld #0x3A
+	out 0xC
+	ld ans_seconds
+	cmp const_10
+	bpl DD_SEC
+	add const_char
+	out 0xC
+	ld #0x73
+	out 0xC
+	hlt
+
+
+DD_SEC:
+	ld #0x0
+	sub #0x1
+	st counter
 	ld ans_seconds
 	call MOD_10
 	add const_char
@@ -49,9 +84,10 @@ PRINT_ANS:
 	ld temp_ost2
 	add const_char
 	out 0xC
+	ld #0x73
+	out 0xC
 	hlt
-
-
+	
 
 MOD_10:
 	st temp_ost2
@@ -93,9 +129,8 @@ MOD_60:
 	min_counter: word 0xFFFF
 
 
-const_ch: word 0x0427
-const_m: word 0x041C
-const_s: word 0x0421
+
+
 const_char: word 0x0030
 const_10: word 0x000A
 const_60: word 0x003C
