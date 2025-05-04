@@ -20,17 +20,51 @@ INPUT_LOOP2:
 CALCULATE:
 	call MOD_3600
 	st ans_hours
-	ld input_seconds
-	sub temp_ost
+	ld temp_ost
 	call MOD_60
 	st ans_minuts
-	sub temp_ost1
+	ld temp_ost1
 	st ans_seconds
+
 
 PRINT_ANS:
 	ld ans_hours
+	add const_char
+	out 0xC
+	ld const_ch
+	out 0xC
+	
+	ld ans_minuts
+	call MOD_10
+	add const_char
+	out 0xC
+	ld temp_ost2
+	add const_char
+	out 0xC
+	
+	ld ans_seconds
+	call MOD_10
+	add const_char
+	out 0xC
+	ld temp_ost2
+	add const_char
 	out 0xC
 	hlt
+
+
+
+MOD_10:
+	st temp_ost2
+	or (counter)+
+	ld temp_ost2
+	sub const_10
+	bpl MOD_10
+	ld temp_ost2
+	st global_ost
+	ld counter
+	ret
+	temp_ost2: word 0x0000
+	counter: word 0xFFFF
 	
 
 MOD_3600:
@@ -53,13 +87,17 @@ MOD_60:
 	bpl MOD_60
 	ld temp_ost1
 	st global_ost
+	ld min_counter
 	ret
 	temp_ost1: word 0x0000
 	min_counter: word 0xFFFF
 
 
-
-
+const_ch: word 0x0427
+const_m: word 0x041C
+const_s: word 0x0421
+const_char: word 0x0030
+const_10: word 0x000A
 const_60: word 0x003C
 const_3600: word 0x0E10
 global_ost: word 0x0000
