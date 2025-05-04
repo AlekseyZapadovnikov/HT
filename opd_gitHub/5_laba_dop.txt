@@ -32,6 +32,7 @@ CALCULATE:
 
 PRINT_HOURS:
 	ld ans_hours
+	beq PRINT_MIN
 	add const_char
 	out 0xC
 	ld #0x68
@@ -42,11 +43,14 @@ PRINT_HOURS:
 
 PRINT_MIN:
 	ld ans_minuts
+	beq PRINT_SEC
 	cmp const_10
 	bpl DD_MIN
 	add const_char
 	out 0xC
 	ld #0x6D
+	out 0xC
+	ld #0x3A
 	out 0xC
 	jump PRINT_SEC
 
@@ -58,11 +62,13 @@ DD_MIN:
 	ld temp_ost2
 	add const_char
 	out 0xC
+	ld #0x6D
+	out 0xC
+	ld #0x3A
+	out 0xC
 
 
 PRINT_SEC:
-	ld #0x3A
-	out 0xC
 	ld ans_seconds
 	cmp const_10
 	bpl DD_SEC
