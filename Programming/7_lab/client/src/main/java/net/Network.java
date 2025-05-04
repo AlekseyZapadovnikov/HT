@@ -1,5 +1,7 @@
 package net;
 
+import IO.Request;
+
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;

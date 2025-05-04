@@ -14,8 +14,9 @@ public class Client {
     private final Console console = new Console();
     private Network network;
     Request userRequest;
+    private ClientsBaseManager baseManager;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         Client client = new Client();
         client.run();
     }
@@ -87,11 +88,15 @@ public class Client {
         return isRunning;
     }
 
-    private void run() {
+    private void run() throws IOException {
         try {
             boolean isRunning = true;
             network = new Network(Config.SERVER_ADDRESS, Config.SERVER_PORT);
             console.println("Connected to server");
+
+            baseManager = new ClientsBaseManager(network, console);
+            baseManager.parseClientStatus(console.inputCheckIn());
+
 
             console.println("Enter command (or 'exit' to quit):");
             while (isRunning) {
@@ -108,6 +113,10 @@ public class Client {
             run();
         } catch (IOException e) {
             console.println("\nClient stopped");
+        } catch (ClassNotFoundException e) {
+            console.println("serialization error has occurred, it might happened if you entered uncorrected check-in data");
+            network.close();
+            run();
         }
     }
 }

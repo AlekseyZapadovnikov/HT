@@ -24,6 +24,7 @@ public class Response implements Serializable {
     private String message = "";
     ArrayList<String> info;
     private boolean isSimpleMessage = false;
+    private short clientStatus;
 
     /**
      * Создает ответ об ошибке.
@@ -173,6 +174,10 @@ public class Response implements Serializable {
      */
     public List<Route> getRoutes() {
         return routes;
+    }
+
+    public short getClientStatus() {
+        return clientStatus;
     }
 
     /**

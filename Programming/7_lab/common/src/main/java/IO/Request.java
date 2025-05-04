@@ -16,9 +16,6 @@ public class Request implements Serializable {
     private boolean argsContain = false;
     private boolean isError = false;
     private Exception exception;
-    private String login;
-    private String password;
-    private boolean flag;
     private static final long serialVersionUID = 1L;
 
     /**
@@ -65,10 +62,8 @@ public class Request implements Serializable {
         this.exception = e;
     }
 
-    public Request(String login, String password, boolean flag){
-        this.login = login;
-        this.password = password;
-        this.flag = flag;
+    public Request(String[] args){
+        this.args = args;
     }
 
     /**
