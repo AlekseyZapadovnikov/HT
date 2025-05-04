@@ -1,0 +1,4 @@
+show
+help
+head
+1243
