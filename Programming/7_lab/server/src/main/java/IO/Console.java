@@ -10,6 +10,8 @@ import java.util.Scanner;
 public class Console {
     private final Scanner scanner = new Scanner(System.in);
 
+    protected Console(){}
+    private static Console console;
     /**
      * Вывод без переноса
      * @param obj объект для вывода
@@ -75,5 +77,12 @@ public class Console {
             return null;
         }
         return Integer.parseInt(line);
+    }
+
+    public static Console getConsole(){
+        if(console == null){
+            console = new Console();
+        }
+        return console;
     }
 }

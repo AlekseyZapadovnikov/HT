@@ -1,13 +1,20 @@
 package net;
 
-import IO.*;
+import IO.Request;
+import IO.Response;
+import IO.ServerConsole;
 import comands.Command;
-import managers.*;
+import managers.CommandManager;
+import managers.Factory;
+import managers.Runner;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.HashSet;
+import java.util.Scanner;
 import java.util.Set;
 import java.util.logging.Level;
 
@@ -37,6 +44,13 @@ public class Server {
     }
 
     private void run() {
+        try {
+            File properties = new File("Programming/7_lab/server/src/main/resources/properties.txt");
+            Scanner serverScanner = new Scanner(properties);
+            Factory factory = new Factory(properties, serverScanner);
+        } catch (FileNotFoundException e) {
+            console.println("всё плохо");
+        }
         try {
             network = new Network(Config.PORT);
             console.log(Level.INFO, "Server started on port " + Config.PORT);
