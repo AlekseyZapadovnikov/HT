@@ -102,8 +102,8 @@ public class Response implements Serializable {
         isSimpleMessage = true;
     }
 
-    public Response(String message, boolean userSecurety){
-        this.userSecurety = userSecurety;
+    public Response(String message, boolean clientStatus){
+        this.clientStatus = clientStatus;
         this.message = message;
     }
 

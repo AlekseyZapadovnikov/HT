@@ -23,7 +23,7 @@ public class Client {
 
     private static class Config {
         static final String SERVER_ADDRESS = "localhost";
-        static final int SERVER_PORT = 6789;
+        static final int SERVER_PORT = 1488;
         static final String EXIT_WORD = "exit";
         static final String SCRIPT_WORD = "execute_script";
     }
@@ -105,7 +105,6 @@ public class Client {
                     System.exit(0);
                 }
             }
-
 
             console.println("Enter command (or 'exit' to quit):");
             while (isRunning) {

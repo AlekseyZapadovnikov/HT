@@ -7,7 +7,7 @@ import comands.Command;
 import managers.CommandManager;
 import managers.Factory;
 import managers.Runner;
-import managers.sql.Config;
+import managers.sql.AuthHandler;
 import managers.sql.DataBaseManager;
 
 import java.io.File;
@@ -16,8 +16,10 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketException;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.HashSet;
 
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 
@@ -28,6 +30,8 @@ public class Server {
     private final Runner runner;
     private final ServerConsole console;
     private final CommandManager commandManager;
+
+    private final Map<Socket, Boolean> authenticatedClients = new HashMap<>();
 
     public Server(Runner runner) {
         this.runner = runner;
@@ -42,7 +46,7 @@ public class Server {
     }
 
     private static class localConfig {
-        final static int PORT = 6789;
+        final static int PORT = 1488;
         final static String EXIT_WORD = "exit";
     }
 
@@ -81,31 +85,46 @@ public class Server {
     }
 
     private void processClients() throws IOException {
+        System.out.println("тут1");
         for (Socket client : clients) {
+            System.out.println("тут2");
             try {
-                try {
-                    Request userRequest = (Request) network.read(client);
-                    if (userRequest == null) {
-                        continue;
-                    }
-                    Response serverResponse;
-                    String commandName = userRequest.getCommand();
-                    if (commandManager.hasCommand(commandName)) {
-                        if (userRequest.isContainRoute()) {
-                            serverResponse = commandManager.getCommandByName(commandName).execute(userRequest.getRoute());
-                        } else {
-                            Command command = commandManager.getCommandByName(commandName);
-                            serverResponse = command.execute(userRequest.getArgs());
-                        }
+                Request userRequest = (Request) network.read(client);
+                if (userRequest == null) continue;
+
+                if (!authenticatedClients.getOrDefault(client, false)) {
+                    Response authResponse = AuthHandler.handleAuth(userRequest);
+                    network.write(client, authResponse);
+                    if (authResponse.getMessage().contains("успешно")) {
+                        authenticatedClients.put(client, true);
                     } else {
-                        serverResponse = new Response("we haven`t such command, enter help to see all valid commands");
+                        clients.remove(client); // выкидываем клиента
+                        client.close();
+                        console.log(Level.INFO, "Client authentication failed: " + client.getInetAddress());
                     }
-                    network.write(client, serverResponse);
-                } catch (ClassNotFoundException e) {
-                    console.log(Level.WARNING, "Deserialization error: " + e.getMessage());
+                    continue; // на этом обработка закончена
                 }
+
+                Response serverResponse;
+                String commandName = userRequest.getCommand();
+
+                if (commandManager.hasCommand(commandName)) {
+                    if (userRequest.isContainRoute()) {
+                        serverResponse = commandManager.getCommandByName(commandName).execute(userRequest.getRoute());
+                    } else {
+                        Command command = commandManager.getCommandByName(commandName);
+                        serverResponse = command.execute(userRequest.getArgs());
+                    }
+                } else {
+                    serverResponse = new Response("we haven’t such command, enter help to see all valid commands");
+                }
+                network.write(client, serverResponse);
+
+            } catch (ClassNotFoundException e) {
+                console.log(Level.WARNING, "Deserialization error: " + e.getMessage());
             } catch (SocketException e) {
                 clients.remove(client);
+                authenticatedClients.remove(client);
                 console.log(Level.INFO, "Client disconnected: " + client.getInetAddress());
             }
         }
