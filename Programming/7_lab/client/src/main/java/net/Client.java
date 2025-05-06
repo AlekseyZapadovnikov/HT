@@ -95,7 +95,16 @@ public class Client {
             console.println("Connected to server");
 
             baseManager = new ClientsBaseManager(network, console);
-            baseManager.parseClientStatus(console.inputCheckIn());
+            short counter = 0;
+            for (int i = 0; i < 5; i++){
+                boolean flag = baseManager.parseClientStatus(console.inputCheckIn());
+                if (flag){
+                    break;
+                } else if (counter++ > 3){
+                    console.println("запрос на подключение отклонён");
+                    System.exit(0);
+                }
+            }
 
 
             console.println("Enter command (or 'exit' to quit):");

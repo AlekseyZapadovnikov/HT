@@ -1,7 +1,7 @@
 package managers.sql;
 
 import IO.Console;
-
+import java.sql.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -49,5 +49,9 @@ public class DataBaseManager {
         } catch (SQLException | InterruptedException e) {
             throw new SQLException("Connection error: " + e.getMessage());
         }
+    }
+
+    public static Connection getConnection() {
+        return connection;
     }
 }

@@ -15,27 +15,16 @@ public class ClientsBaseManager {
         this.console = console;
     }
 
-    public short checkClient(String[] args) throws IOException, ClassNotFoundException {
+    public Response checkClient(String[] args) throws IOException, ClassNotFoundException {
         Request request = new Request(args);
         network.write(request);
         Response response = (Response) network.read();
-        return response.getClientStatus();
+        return response;
     }
 
     public boolean parseClientStatus(String[] args) throws IOException, ClassNotFoundException {
-        boolean flag = false;
-        switch (checkClient(args)) {
-            case (0):
-                console.println("Вы успешно подключены и можете приступать к работе");
-                flag = true;
-                break;
-            case (1):
-                console.println("Пользователя с таким login нет =(");
-                break;
-            case (2):
-                console.println("неверный пароль");
-                break;
-        }
-        return flag;
+        Response response = checkClient(args);
+        console.println(response.getMessage());
+        return response.isClientStatus();
     }
 }

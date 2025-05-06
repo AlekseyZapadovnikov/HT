@@ -11,20 +11,16 @@ import java.util.Scanner;
 public class Factory {
     private Factory factory;
     private Scanner scanner;
+    private File file;
 
-    public Factory(File file, Scanner scanner) {
+    public Factory(File file) {
+        this.file = file;
     }
 
-    public Factory init(File file) throws FileNotFoundException {
-        if (factory == null) {
-            scanner = new Scanner(file);
-            factory = new Factory(file, scanner);
-        }
-        return factory;
-    }
 
     public Config createConfig() throws FileNotFoundException {
         if (Config.config == null) {
+            scanner = new Scanner(file);
             return Config.init(scanner);
         }
         return Config.config;

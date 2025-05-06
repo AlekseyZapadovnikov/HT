@@ -65,12 +65,12 @@ public class SSHConnection implements Runnable{
 
             console.println("Connecting SSH...");
             session.connect();
-
             session.setPortForwardingL(localPort, remoteHost, remotePort);
             console.println(String.format("Tunnel created: localhost:%d -> %s:%d to %s:%d%n",
                     localPort, remoteHost, remotePort, sshHost, sshPort));
 
             isConnected = true;
+            System.out.println("isConnected == true");
 
             while (!Thread.currentThread().isInterrupted()) {
                 Thread.sleep(1000);

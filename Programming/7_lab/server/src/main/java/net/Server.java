@@ -7,14 +7,17 @@ import comands.Command;
 import managers.CommandManager;
 import managers.Factory;
 import managers.Runner;
+import managers.sql.Config;
+import managers.sql.DataBaseManager;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketException;
+import java.sql.SQLException;
 import java.util.HashSet;
-import java.util.Scanner;
+
 import java.util.Set;
 import java.util.logging.Level;
 
@@ -32,29 +35,30 @@ public class Server {
         this.commandManager = runner.getCommandManager();
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
         Runner runner = new Runner();
         Server server = new Server(runner);
         server.run();
     }
 
-    private static class Config {
+    private static class localConfig {
         final static int PORT = 6789;
         final static String EXIT_WORD = "exit";
     }
 
-    private void run() {
+    private void run() throws SQLException {
         try {
-            File properties = new File("Programming/7_lab/server/src/main/resources/properties.txt");
-            Scanner serverScanner = new Scanner(properties);
-            Factory factory = new Factory(properties, serverScanner);
+            File properties = new File("C:\\Users\\Asus\\Desktop\\repo\\HT\\Programming\\7_lab\\server\\src\\main\\resources\\properties.txt");
+            Factory factory = new Factory(properties);
+            DataBaseManager dbManager = factory.createDataBaseManager();
+            dbManager.connect();
         } catch (FileNotFoundException e) {
             console.println("всё плохо");
         }
         try {
-            network = new Network(Config.PORT);
-            console.log(Level.INFO, "Server started on port " + Config.PORT);
-            console.log(Level.INFO, "Type '" + Config.EXIT_WORD + "' to stop the server");
+            network = new Network(localConfig.PORT);
+            console.log(Level.INFO, "Server started on port " + localConfig.PORT);
+            console.log(Level.INFO, "Type '" + localConfig.EXIT_WORD + "' to stop the server");
             runner.run();
             while (isRunning) {
                 try {
@@ -94,7 +98,7 @@ public class Server {
                             serverResponse = command.execute(userRequest.getArgs());
                         }
                     } else {
-                        serverResponse = new Response("we havn`t such command, enter help to see all valid commands");
+                        serverResponse = new Response("we haven`t such command, enter help to see all valid commands");
                     }
                     network.write(client, serverResponse);
                 } catch (ClassNotFoundException e) {

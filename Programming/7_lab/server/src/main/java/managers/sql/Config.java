@@ -28,9 +28,11 @@ public class Config {
         sshHost = scanner.nextLine();
         sshPort = scanner.nextInt();
         localPort = scanner.nextInt();
+        scanner.nextLine();
         localHost = scanner.nextLine();
         remoteHost = scanner.nextLine();
         remotePort = scanner.nextInt();
+        scanner.nextLine();
         sshPassword = scanner.nextLine();
         dbName = scanner.nextLine();
         dbPassword = scanner.nextLine();

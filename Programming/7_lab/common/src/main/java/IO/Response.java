@@ -24,7 +24,7 @@ public class Response implements Serializable {
     private String message = "";
     ArrayList<String> info;
     private boolean isSimpleMessage = false;
-    private short clientStatus;
+    private boolean clientStatus;
 
     /**
      * Создает ответ об ошибке.
@@ -102,6 +102,11 @@ public class Response implements Serializable {
         isSimpleMessage = true;
     }
 
+    public Response(String message, boolean userSecurety){
+        this.userSecurety = userSecurety;
+        this.message = message;
+    }
+
     /**
      * Формирует строковое представление ответа.
      *
@@ -176,9 +181,6 @@ public class Response implements Serializable {
         return routes;
     }
 
-    public short getClientStatus() {
-        return clientStatus;
-    }
 
     /**
      * Возвращает одиночный маршрут.
@@ -241,5 +243,9 @@ public class Response implements Serializable {
      */
     public boolean isSimpleMessage() {
         return isSimpleMessage;
+    }
+
+    public boolean isClientStatus() {
+        return clientStatus;
     }
 }
