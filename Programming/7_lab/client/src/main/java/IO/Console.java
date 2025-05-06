@@ -232,7 +232,7 @@ public class Console extends ConsoleQuest {
     }
 
     public String[] inputCheckIn(){
-        System.out.println("Здравствуйте, Вы уже зарегистрированы в сисдеме?");
+        System.out.println("Здравствуйте, Вы уже зарегистрированы в системе?");
         System.out.print("введите да/нет: ");
         String ans;
         while (true) {

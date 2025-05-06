@@ -66,7 +66,6 @@ public class Server {
             runner.run();
             while (isRunning) {
                 try {
-//                    checkConsole();
                     Socket client = network.acceptConnection();
                     if (client != null) {
                         clients.add(client);
@@ -74,6 +73,8 @@ public class Server {
                     }
                     processClients();
                 } catch (IOException e) {
+                    e.printStackTrace();
+                    System.exit(0);
                 }
             }
             runner.closeApp();
@@ -83,27 +84,46 @@ public class Server {
             console.log(Level.WARNING, "Server error: " + e.getMessage());
         }
     }
-
     private void processClients() throws IOException {
-        System.out.println("тут1");
+        Set<Socket> disconnectedClients = new HashSet<>();
+
         for (Socket client : clients) {
-            System.out.println("тут2");
             try {
+                if (!client.isConnected() || client.isClosed()) {
+                    disconnectedClients.add(client);
+                    continue;
+                }
+
+                System.out.println("here1");
+
                 Request userRequest = (Request) network.read(client);
-                if (userRequest == null) continue;
+
+                System.out.println("here2");
+
+                if (userRequest == null) {
+                    continue;
+                }
+
+                System.out.println(userRequest.getCommand());
 
                 if (!authenticatedClients.getOrDefault(client, false)) {
+                    System.out.println("1");
                     Response authResponse = AuthHandler.handleAuth(userRequest);
                     network.write(client, authResponse);
                     if (authResponse.getMessage().contains("успешно")) {
+                        System.out.println("2");
                         authenticatedClients.put(client, true);
+                        System.out.println("3");
                     } else {
-                        clients.remove(client); // выкидываем клиента
+                        disconnectedClients.add(client);
                         client.close();
                         console.log(Level.INFO, "Client authentication failed: " + client.getInetAddress());
                     }
-                    continue; // на этом обработка закончена
+                    System.out.println("4");
+                    continue;
                 }
+
+                System.out.println("tut2");
 
                 Response serverResponse;
                 String commandName = userRequest.getCommand();
@@ -118,15 +138,21 @@ public class Server {
                 } else {
                     serverResponse = new Response("we haven’t such command, enter help to see all valid commands");
                 }
+
                 network.write(client, serverResponse);
 
             } catch (ClassNotFoundException e) {
                 console.log(Level.WARNING, "Deserialization error: " + e.getMessage());
             } catch (SocketException e) {
-                clients.remove(client);
-                authenticatedClients.remove(client);
+                disconnectedClients.add(client);
+                network.removeStreams(client);
+                client.close();
                 console.log(Level.INFO, "Client disconnected: " + client.getInetAddress());
             }
         }
+
+        // Удаляем отключенных клиентов
+        clients.removeAll(disconnectedClients);
+        disconnectedClients.forEach(authenticatedClients::remove);
     }
 }
