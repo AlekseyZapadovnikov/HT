@@ -33,10 +33,10 @@ public class Head extends Command {
      */
     @Override
     public Response execute(String[] args) {
-        if (colectionManager.getroutes().isEmpty()) {
+        if (colectionManager.getRoutes().isEmpty()) {
             return new Response("collection is empty");
         } else {
-            return new Response(super.name, colectionManager.getroutes().get(0));
+            return new Response(super.name, colectionManager.getRoutes().get(0));
         }
     }
 }

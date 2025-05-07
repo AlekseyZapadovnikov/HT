@@ -36,6 +36,6 @@ public class Show extends Command {
      */
     @Override
     public Response execute(String[] args) {
-        return new Response(super.name, colectionManager.getroutes());
+        return new Response(super.name, colectionManager.getRoutes());
     }
 }

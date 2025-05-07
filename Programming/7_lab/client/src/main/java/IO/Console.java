@@ -13,7 +13,9 @@ import java.util.Scanner;
 public class Console extends ConsoleQuest {
     private final Scanner scanner;
     private static final String[] ROUTE_COMMANDS = {"add", "update"};
+    private static final String[] USER_FIELD_REQUIRED = {"add", "update", "clear", "remove_lower", "remove_head", "remove_by_id"};
     private boolean readFile = false;
+    private static String login;
 
     /**
      * Конструктор по умолчанию. Инициализирует Scanner для чтения из System.in.
@@ -32,7 +34,7 @@ public class Console extends ConsoleQuest {
             System.out.print("\nВведите команду: ");
             return parseLine(scanner.nextLine());
         } else {
-            if (scanner.hasNextLine()){
+            if (scanner.hasNextLine()) {
                 return parseLine(scanner.nextLine());
             } else {
                 return new Request("end");
@@ -45,7 +47,7 @@ public class Console extends ConsoleQuest {
      *
      * @return следующая строка ввода
      */
-    public String nextLine(){
+    public String nextLine() {
         return scanner.nextLine();
     }
 
@@ -69,12 +71,28 @@ public class Console extends ConsoleQuest {
         }
 
         if (Arrays.asList(ROUTE_COMMANDS).contains(command)) {
-            return new Request(command, askRoute());
+            Request req = new Request(command, askRoute());
+            req.setUserLogin(login);
+            return req;
         }
+
+        Request req;
+        if (args != null) {
+            req = new Request(command, args);
+            System.out.println("1");
+        } else {
+            req = new Request(command, new String[0]);
+        }
+
+        if (Arrays.asList(USER_FIELD_REQUIRED).contains(command)) {
+            req.setUserLogin(login);
+            return req;
+        }
+
         if (args != null) {
             return new Request(command, args);
         }
-        return new Request(command, new String[0]);
+        return new Request(command);
     }
 
     /**
@@ -83,7 +101,7 @@ public class Console extends ConsoleQuest {
      * @param line строка ввода
      * @return извлеченная команда
      */
-    public String parseCommand(String line){
+    public String parseCommand(String line) {
         String[] parts = line.trim().split("\\s+");
         String command = parts[0].toLowerCase();
         return command;
@@ -231,13 +249,13 @@ public class Console extends ConsoleQuest {
         return Integer.parseInt(line);
     }
 
-    public String[] inputCheckIn(){
+    public String[] inputCheckIn() {
         System.out.println("Здравствуйте, Вы уже зарегистрированы в системе?");
         System.out.print("введите да/нет: ");
         String ans;
         while (true) {
             ans = scanner.nextLine().toLowerCase();
-            if (ans.equals("да") || ans.equals("нет")){
+            if (ans.equals("да") || ans.equals("нет")) {
                 break;
             } else {
                 System.out.print("Ответ должен быть 'да' или 'нет'!!");
@@ -246,10 +264,10 @@ public class Console extends ConsoleQuest {
         }
 
         String login;
-        while (true){
+        while (true) {
             System.out.print("введите логин: ");
             login = scanner.nextLine();
-            if (!login.isEmpty()){
+            if (!login.isEmpty()) {
                 break;
             } else {
                 System.out.print("логин не может быть пустым!");
@@ -257,10 +275,10 @@ public class Console extends ConsoleQuest {
         }
 
         String password;
-        while (true){
+        while (true) {
             System.out.print("введите пароль: ");
             password = scanner.nextLine();
-            if (!password.isEmpty()){
+            if (!password.isEmpty()) {
                 break;
             } else {
                 System.out.print("пароль не может быть пустым!");
@@ -272,5 +290,9 @@ public class Console extends ConsoleQuest {
         res[2] = ans;
 
         return res;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
     }
 }

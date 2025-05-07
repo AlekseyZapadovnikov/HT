@@ -1,9 +1,16 @@
+/**
+ * Менеджер коллекции Route с синхронизацией с БД.
+ */
 package managers;
 
-import IO.RouteXMLScaner;
-import IO.RouteXMLWriter;
+import comands.sqlCommands.sqlAddRoute;
+import comands.sqlCommands.sqlRemoveRoute;
+import itemsInArrea.Coordinates;
+import itemsInArrea.Location;
 import itemsInArrea.Route;
-import java.io.*;
+import managers.sql.DataBaseManager;
+
+import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.HashMap;
@@ -11,241 +18,193 @@ import java.util.LinkedList;
 import java.util.Set;
 
 /**
- * Manages a collection of {@link Route} objects, providing methods to add,
- * update, remove, save, and retrieve routes by their ID.
- * <p>
- * The class also keeps track of initialization, update, and save times.
+ * Менеджер коллекции Route с синхронизацией с БД.
  */
 public class ColectionManager {
-    /**
-     * The list of routes (used as the main collection).
-     */
-    LinkedList<Route> routes;
+    private final LinkedList<Route> routes = new LinkedList<>();
+    private final HashMap<Long, Route> routesMap = new HashMap<>();
+    private final sqlAddRoute addRouteCmd = new sqlAddRoute("add_route");
+    private final sqlRemoveRoute removeRouteCmd = new sqlRemoveRoute("remove_route");
 
-    /**
-     * A map from route IDs to {@link Route} objects for quick lookup.
-     */
-    HashMap<Long, Route> routesMap = new HashMap<>();
-
-    long currentId = 5;
     private LocalDateTime lastInitTime;
     private LocalDateTime lastUpdateTime;
     private LocalDateTime lastSaveTime;
 
-    private RouteXMLScaner scaner;
-    private RouteXMLWriter writer;
+    public ColectionManager() {
+        this.lastInitTime = LocalDateTime.now();
+    }
 
     /**
-     * Constructs a {@code ColectionManager} by reading data via the given scanner.
-     * Initializes the collection and sets {@link #lastInitTime} to the current time.
+     * Инициализирует коллекцию из БД: считывает все маршруты и наполняет память.
      *
-     * @param scaner the XML scanner to read initial data from
-     * @param writer the XML writer to save data
+     * @return true, если загрузка прошла успешно
      */
-    public ColectionManager(RouteXMLScaner scaner, RouteXMLWriter writer) {
-        this.lastInitTime = LocalDateTime.now();
-        this.scaner = scaner;
-        this.routes = scaner.readData();
-        this.writer = writer;
+    public boolean init() {
+        Connection conn = DataBaseManager.getConnection();
+        if (conn == null) {
+            System.err.println("[ERROR] DB connection not initialized");
+            return false;
+        }
+        String sql =
+                "SELECT r.id, r.name, r.creation_date, r.distance, " +
+                        "c.x AS coord_x, c.y AS coord_y, " +
+                        "lf.x AS from_x, lf.y AS from_y, lf.name AS from_name, " +
+                        "lt.x AS to_x, lt.y AS to_y, lt.name AS to_name " +
+                        "FROM route r " +
+                        "JOIN coordinates c ON r.coordinates_id = c.id " +
+                        "JOIN location lf ON r.location_from_id = lf.id " +
+                        "LEFT JOIN location lt ON r.location_to_id = lt.id";
+        try (PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            routes.clear();
+            routesMap.clear();
+            while (rs.next()) {
+                Route route = new Route();
+                long id = rs.getLong("id");
 
-        for (Route route : routes) {
-            routesMap.put(route.getId(), route);
+                route.setId(id);
+                route.setName(rs.getString("name"));
+                route.setCreationDate(rs.getDate("creation_date").toLocalDate());
+                Coordinates coords = new Coordinates(
+                        rs.getFloat("coord_x"), rs.getFloat("coord_y")
+                );
+                route.setCoordinates(coords);
+                Location from = new Location(
+                        rs.getFloat("from_x"), rs.getLong("from_y"), rs.getString("from_name")
+                );
+                route.setFrom(from);
+                String toName = rs.getString("to_name");
+                if (toName != null) {
+                    Location to = new Location(
+                            rs.getFloat("to_x"), rs.getLong("to_y"), toName
+                    );
+                    route.setTo(to);
+                }
+                route.setDistance(rs.getLong("distance"));
+                routes.add(route);
+                routesMap.put(route.getId(), route);
+            }
+            sortAndUpdateTime();
+            lastInitTime = LocalDateTime.now();
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
         }
     }
 
-    /**
-     * Returns the last initialization time of the collection manager.
-     *
-     * @return the {@link LocalDateTime} of the last initialization
-     */
-    public LocalDateTime getLastInitTime() {
-        return lastInitTime;
+
+    public boolean add(Route route) {
+        routesMap.put(route.getId(), route);
+        routes.add(route);
+        sortAndUpdateTime();
+        return true;
     }
 
-    /**
-     * Returns the last time the routes were saved to file.
-     *
-     * @return the {@link LocalDateTime} of the last save
-     */
+    public boolean remove(long id) {
+        Route r = routesMap.remove(id);
+        routes.remove(r);
+        if (r == null) return false;
+        sortAndUpdateTime();
+        return true;
+    }
+
+    public Set<Long> getIdSet() {
+        return routesMap.keySet();
+    }
+
+    public LinkedList<Route> getRoutes() {
+        return routes;
+    }
+
     public LocalDateTime getLastSaveTime() {
         return lastSaveTime;
     }
 
-    /**
-     * Returns the current list of routes.
-     *
-     * @return a {@link LinkedList} of routes
-     */
-    public LinkedList<Route> getroutes() {
-        return routes;
+    public LocalDateTime getLastUpdateTime() {
+        return lastUpdateTime;
     }
 
-    /**
-     * Gets a {@link Route} object by its unique ID.
-     *
-     * @param id the route's ID
-     * @return the {@code Route} with the given ID, or {@code null} if not found
-     */
-    public Route byId(long id) {
-        return routesMap.get(id);
+    public LocalDateTime getLastInitTime() {
+        return lastInitTime;
     }
 
-    /**
-     * Checks if the given {@link Route} is contained in this collection.
-     *
-     * @param e the route to check
-     * @return {@code true} if it is present or {@code e} is null,
-     *         {@code false} otherwise
-     */
-    public boolean isСontain(Route e) {
-        return e == null || byId(e.getId()) != null;
-    }
-
-    /**
-     * Finds the next free ID that is not yet used in the collection.
-     *
-     * @return a long value representing a free ID
-     */
-    public long getFreeId() {
-        long newId = currentId + 1;
-        while (byId(newId) != null) {
-            newId++;
-        }
-        currentId = newId; // Обновляем currentId до последнего найденного свободного ID
-        return newId;
-    }
-
-    /**
-     * Adds a new {@link Route} to the collection if it is not already present.
-     *
-     * @param a the route to add
-     * @return {@code true} if added, {@code false} otherwise
-     */
-    public boolean add(Route a) {
-        System.out.println("[DEBUG] Попытка добавления объекта: " + a);
-        if (isСontain(a)) {
-            System.out.println("[DEBUG] Объект уже существует в коллекции.");
+    public boolean saveRoutes() {
+        Connection conn = DataBaseManager.getConnection();
+        if (conn == null) {
+            System.err.println("[ERROR] DB connection not initialized");
             return false;
         }
-        long newId = getFreeId();
-        System.out.println("[DEBUG] Присвоен ID: " + newId);
-        a.setId(newId);
-        routesMap.put(newId, a);
-        routes.add(a);
-        update();
-        System.out.println("[DEBUG] Объект успешно добавлен. Текущий размер коллекции: " + routes.size());
-        return true;
-    }
-
-    /**
-     * Updates an existing {@link Route} in the collection.
-     *
-     * @param a the route with updated values
-     * @return {@code true} if successfully updated, {@code false} if not found
-     */
-    public boolean update(Route a) {
-        if (!isСontain(a)) return false;
-        routes.remove(byId(a.getId()));
-        routesMap.put(a.getId(), a);
-        routes.add(a);
-        update();
-        return true;
-    }
-
-    /**
-     * Removes the {@link Route} with the specified ID from the collection.
-     *
-     * @param id the ID of the route to remove
-     * @return {@code true} if the route was removed, {@code false} if not found
-     */
-    public boolean remove(long id) {
-        Route a = byId(id);
-        if (a == null) return false;
-        routesMap.remove(a.getId());
-        routes.remove(a);
-        update();
-        return true;
-    }
-
-    /**
-     * Clears all routes from the collection.
-     */
-    public void clear(){
-        routes.clear();
-        routesMap.clear();
-        currentId = 0;
-    }
-
-    /**
-     * Sorts the routes, updates {@link #lastUpdateTime} to the current time,
-     * and initializes {@link #lastInitTime} if it was null.
-     */
-    public void update() {
-        Collections.sort(routes);
-        lastUpdateTime = LocalDateTime.now();
-        if (lastInitTime == null) {
-            lastInitTime = lastUpdateTime;
+        try {
+            conn.setAutoCommit(false);
+            try (Statement st = conn.createStatement()) {
+                st.executeUpdate(
+                        "TRUNCATE TABLE route, coordinates, location RESTART IDENTITY CASCADE"
+                );
+            }
+            for (Route r : routes) {
+                boolean ok = addRouteCmd.execute("route", r);
+                if (!ok) {
+                    conn.rollback();
+                    System.err.println("[ERROR] Ошибка при сохранении маршрута ID=" + r.getId());
+                    return false;
+                }
+            }
+            conn.commit();
+            lastSaveTime = LocalDateTime.now();
+            return true;
+        } catch (SQLException ex) {
+            try {
+                conn.rollback();
+            } catch (SQLException ignored) {
+            }
+            ex.printStackTrace();
+            return false;
+        } finally {
+            try {
+                conn.setAutoCommit(true);
+            } catch (SQLException ignored) {
+            }
         }
     }
 
-    /**
-     * Saves the routes to an external file using {@link RouteXMLWriter}.
-     *
-     * @throws IOException if an I/O error occurs while saving
-     */
-    public void saveRoutes() throws IOException {
-        writer.writeRoutes(routes);
-        lastSaveTime = LocalDateTime.now();
+    private void sortAndUpdateTime() {
+        Collections.sort(routes);
+        lastUpdateTime = LocalDateTime.now();
     }
 
-    /**
-     * Checks if the collection contains a route with the given ID.
-     *
-     * @param id the ID to check
-     * @return {@code true} if the ID is present, {@code false} otherwise
-     */
-    public boolean isContainId(Long id) {
-        return routesMap.containsKey(id);
+    public void clear() {
+        routes.clear();
+        routesMap.clear();
     }
 
-    /**
-     * Returns a string with information about the collection:
-     * <ul>
-     *   <li>Initialization time</li>
-     *   <li>Last update time</li>
-     *   <li>Type of objects</li>
-     *   <li>Number of elements</li>
-     * </ul>
-     *
-     * @return info about the collection
-     */
+    public boolean isContainId(long id) {
+        for (Route route : routes) {
+            if (route.getId() == id) return true;
+        }
+        return false;
+    }
+
+    public void update(Route route, long id) {
+        remove(id);
+        route.setId(id);
+        routes.add(route);
+        System.out.println("добавили");
+    }
+
+    //    private LocalDateTime lastInitTime;
+//    private LocalDateTime lastUpdateTime;
+//    private LocalDateTime lastSaveTime;
     @Override
     public String toString() {
-        if (routes.isEmpty()) return "Коллекция пуста!";
+        String s = "lastInitTime: " + lastInitTime.toString() + "\n";
+        s += "lastUpdateTime: " + lastUpdateTime.toString() + "\n";
+        if (lastSaveTime != null) {
+            s += "lastSaveTime: " + lastSaveTime.toString() + "\n";
+        }
+        String hs = Integer.valueOf(routes.size()).toString();
+        s += "size: " + hs;
 
-        String info = "Время инициализации: " + lastInitTime.toString() + '\n' +
-                "Время последнего изменения: " + lastUpdateTime.toString() + '\n' +
-                "Тип объектов: Routes" + '\n' +
-                "Количество элементов: " + routes.size();
-
-        return info;
-    }
-
-    /**
-     * Returns the current size of the collection.
-     *
-     * @return the number of routes
-     */
-    public long getSize() {
-        return routes.size();
-    }
-
-    /**
-     * Returns all IDs stored in the collection as a {@link Set}.
-     *
-     * @return a set of route IDs
-     */
-    public Set<Long> getIdSet() {
-        return routesMap.keySet();
+        return s;
     }
 }

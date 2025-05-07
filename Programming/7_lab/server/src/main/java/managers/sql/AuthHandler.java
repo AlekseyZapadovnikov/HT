@@ -15,6 +15,7 @@ public class AuthHandler {
 
     /**
      * Проверяет логин и пароль пользователя.
+     *
      * @param request запрос, содержащий логин, пароль и флаг регистрации
      * @return объект Response с результатом проверки
      */
@@ -22,7 +23,7 @@ public class AuthHandler {
         String[] args = request.getArgs();
 
         if (args == null || args.length < 3) {
-            return new Response("Неверный формат запроса: необходимо передать логин, пароль и флаг регистрации.");
+            return new Response("Неверный формат запроса: необходимо передать логин, пароль и флаг регистрации.", false);
         }
 
         String login = args[0];
@@ -30,9 +31,10 @@ public class AuthHandler {
         String flag = args[2].trim().toLowerCase(); // "да" или "нет"
         String hashedPassword = Security.hashPassword(rawPassword);
 
-        try (Connection connection = DataBaseManager.getConnection()) {
+        try {
+            Connection connection = DataBaseManager.getConnection();
             if (connection == null) {
-                return new Response("Ошибка подключения к базе данных.");
+                return new Response("Ошибка подключения к базе данных.", false);
             }
 
             if (flag.equals("да")) {

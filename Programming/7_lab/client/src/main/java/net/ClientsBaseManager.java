@@ -17,6 +17,7 @@ public class ClientsBaseManager {
 
     public Response checkClient(String[] args) throws IOException, ClassNotFoundException {
         Request request = new Request(args);
+        console.setLogin(args[0]);
         network.write(request);
         Response response = (Response) network.read();
         return response;

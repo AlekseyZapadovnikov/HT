@@ -45,9 +45,9 @@ public class PrintAscending extends Command {
      */
     @Override
     public Response execute(String[] args) {
-        colectionManager.getroutes().sort(null);
+        colectionManager.getRoutes().sort(null);
         LinkedList<Route> lst = new LinkedList<>();
-        for (Route route : colectionManager.getroutes()) {
+        for (Route route : colectionManager.getRoutes()) {
             lst.add(route);
         }
         return new Response(super.name, lst);

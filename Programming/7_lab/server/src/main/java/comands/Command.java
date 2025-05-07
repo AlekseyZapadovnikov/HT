@@ -1,5 +1,6 @@
 package comands;
 
+import IO.Request;
 import IO.Response;
 
 /**
@@ -35,6 +36,8 @@ public class Command {
     public Response execute(String[] args){
         return new Response();
     }
+    public Response execute(Object obj, String username){return new Response();}
+    public Response execute(String[] args, String userLogin){return new Response();}
     /**
      * Returns the name and usage of the command.
      *

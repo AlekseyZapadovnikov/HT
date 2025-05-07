@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.Set;
-
+import comands.sqlCommands.*;
 /**
  * Manages command objects and their execution history.
  * <p>
@@ -15,6 +15,8 @@ import java.util.Set;
  * </p>
  */
 public class CommandManager {
+
+    HashMap<String, sqlCommand> sqlCommands = new HashMap<>();
 
     /**
      * A mapping from command names to their corresponding {@link Command} objects.

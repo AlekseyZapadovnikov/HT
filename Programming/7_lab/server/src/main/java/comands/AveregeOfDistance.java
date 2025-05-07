@@ -35,9 +35,9 @@ public class AveregeOfDistance extends Command {
     @Override
     public Response execute(String[] args) {
         long averDist = 0L;
-        long elemAmount = colectionManager.getroutes().size();
+        long elemAmount = colectionManager.getRoutes().size();
 
-        for (Route route : colectionManager.getroutes()) {
+        for (Route route : colectionManager.getRoutes()) {
             averDist += route.getDistance() / elemAmount;
         }
         Long newAverageDist = (Long) averDist;

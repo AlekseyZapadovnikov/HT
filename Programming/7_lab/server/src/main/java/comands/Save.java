@@ -15,20 +15,16 @@ import java.io.IOException;
  * </p>
  */
 public class Save extends Command {
-    private final RouteXMLWriter saver;
     private final ColectionManager colectionManager;
 
     /**
      * Constructs a new Save command.
      *
      * @param name             the name of the command.
-     * @param description      a short description of the command.
-     * @param saver            the {@link RouteXMLWriter} used to write the routes.
      * @param colectionManager the {@link ColectionManager} that holds the routes to save.
      */
-    public Save(String name, String description, RouteXMLWriter saver, ColectionManager colectionManager) {
+    public Save(String name, String description, ColectionManager colectionManager) {
         super(name, description);
-        this.saver = saver;
         this.colectionManager = colectionManager;
     }
 
@@ -45,11 +41,8 @@ public class Save extends Command {
      */
     @Override
     public Response execute(String[] args) {
-        try {
-            saver.writeRoutes(colectionManager.getroutes());
-            return new Response(super.name, "Data were saved successfully");
-        } catch (IOException e) {
-            return new Response(e, "There was a problem writing to file");
-        }
+
+        colectionManager.saveRoutes();
+        return new Response(super.name, "Data were saved successfully");
     }
 }

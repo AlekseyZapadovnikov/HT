@@ -39,7 +39,7 @@ public class CountByDistance extends Command {
             long dist = Long.parseLong(args[args.length]);
 
             long counter = 0L;
-            for (Route route : colectionManager.getroutes()) {
+            for (Route route : colectionManager.getRoutes()) {
                 if (route.getDistance() == dist) {
                     counter++;
                 }

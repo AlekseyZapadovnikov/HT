@@ -16,6 +16,7 @@ public class Request implements Serializable {
     private boolean argsContain = false;
     private boolean isError = false;
     private Exception exception;
+    private String userLogin;
     private static final long serialVersionUID = 1L;
 
     /**
@@ -127,5 +128,13 @@ public class Request implements Serializable {
      */
     public Exception getException() {
         return exception;
+    }
+
+    public String getUserLogin() {
+        return userLogin;
+    }
+
+    public void setUserLogin(String userLogin) {
+        this.userLogin = userLogin;
     }
 }

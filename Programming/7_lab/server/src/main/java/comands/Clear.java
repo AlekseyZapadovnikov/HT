@@ -30,8 +30,7 @@ public class Clear extends Command {
      * @param args not used for this command.
      */
     @Override
-    public Response execute(String[] args) {
-        colectionManager.clear();
-        return new Response(super.name, "Сollection cleared");
+    public Response execute(String[] args, String userLogin) {
+        return new Response("you can`t clear collection, because not all objects belong to you");
     }
 }

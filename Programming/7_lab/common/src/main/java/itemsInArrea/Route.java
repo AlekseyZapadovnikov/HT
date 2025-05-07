@@ -13,6 +13,7 @@ public class Route implements Validate, Comparable<Route>, Serializable {
     private Location from;
     private Location to;
     private long distance;
+    private String userLogin;
 
     public Route(String name, Coordinates coordinates, Location from, long distance, Location to) {
         this.name = name;
@@ -87,7 +88,7 @@ public class Route implements Validate, Comparable<Route>, Serializable {
         this.name = name;
     }
 
-    public void setId(long id){
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -107,5 +108,29 @@ public class Route implements Validate, Comparable<Route>, Serializable {
                 ", to=" + to +
                 ", distance=" + distance +
                 '}';
+    }
+
+    public void setCoordinates(Coordinates coordinates) {
+        this.coordinates = coordinates;
+    }
+
+    public void setDistance(long distance) {
+        this.distance = distance;
+    }
+
+    public void setTo(Location to) {
+        this.to = to;
+    }
+
+    public void setFrom(Location from) {
+        this.from = from;
+    }
+
+    public void setCreationDate(LocalDate creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public String getUserLogin() {
+        return userLogin;
     }
 }

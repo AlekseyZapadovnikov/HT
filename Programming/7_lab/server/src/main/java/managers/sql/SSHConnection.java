@@ -70,8 +70,6 @@ public class SSHConnection implements Runnable{
                     localPort, remoteHost, remotePort, sshHost, sshPort));
 
             isConnected = true;
-            System.out.println("isConnected == true");
-
             while (!Thread.currentThread().isInterrupted()) {
                 Thread.sleep(1000);
             }

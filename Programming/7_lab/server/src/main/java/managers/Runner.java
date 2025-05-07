@@ -1,14 +1,9 @@
 package managers;
+
 import IO.RouteXMLScaner;
 import IO.RouteXMLWriter;
 import IO.ServerConsole;
-import comands.Command;
 import comands.*;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.logging.Level;
 
 /**
  * Initializes and manages the application's main components:
@@ -24,11 +19,11 @@ import java.util.logging.Level;
  */
 public class Runner {
 
-    ColectionManager colectionManager;
-    CommandManager commandManager;
+    private ColectionManager colectionManager;
+    private CommandManager commandManager;
+    private ServerConsole serverConsole;
     private RouteXMLScaner xmlScaner;
     private RouteXMLWriter xmlWriter;
-    private ServerConsole serverConsole;
     /**
      * Constructs a {@code Runner}, initializing the XML scanner and writer,
      * creating a {@link ColectionManager}, and instantiating a {@link CommandManager}.
@@ -40,16 +35,9 @@ public class Runner {
      * @throws RuntimeException if the required file is not found
      */
     public Runner() {
-        try {
-            this.xmlScaner = new RouteXMLScaner(new File("C:\\Users\\Asus\\Desktop\\repo\\HT\\Programming\\testt\\server\\src\\main\\resources\\prog_lab_5_data.xml"));
-            this.xmlWriter = new RouteXMLWriter("C:\\Users\\Asus\\Desktop\\repo\\HT\\Programming\\testt\\server\\src\\main\\resources\\test.xml");
-            colectionManager = new ColectionManager(this.xmlScaner, this.xmlWriter);
-            commandManager = new CommandManager();
-            serverConsole = new ServerConsole();
-        } catch (IOException e) {
-            System.out.println("file not found");
-            throw new RuntimeException(e);
-        }
+        colectionManager = new ColectionManager();
+        commandManager = new CommandManager();
+        serverConsole = new ServerConsole();
     }
 
     /**
@@ -61,7 +49,7 @@ public class Runner {
      */
     public void run() {
         fillCommands();
-        colectionManager.update();
+        colectionManager.init();
     }
 
     /**
@@ -129,27 +117,10 @@ public class Runner {
         Command save = new Save(
                 "save",
                 "сохранить коллекцию в файл",
-                this.xmlWriter,
                 this.colectionManager
         );
         this.commandManager.addCommand(save);
 
-        // execute_script file_name
-//        Command executeScript = new ExecuteScript(
-//                "execute_script",
-//                "считать и исполнить скрипт из указанного файла",
-//                this.commandManager
-//        );
-//        this.commandManager.addCommand(executeScript);
-
-        // exit
-//        Command exit = new Exit(
-//                "exit",
-//                "завершить программу (без сохранения в файл)"
-//        );
-//        this.commandManager.addCommand(exit);
-
-        // head
         Command head = new Head(
                 "head",
                 "вывести первый элемент коллекции",
@@ -198,28 +169,8 @@ public class Runner {
         this.commandManager.addCommand(printAscending);
     }
 
-//    public void processServerCommand(String line){
-//        String [] tokens = line.split(" ");
-//        String commandName = tokens[0].toLowerCase();
-//        String [] arguments = {};
-//        if(tokens.length > 1){
-//            arguments = Arrays.copyOfRange(tokens, 1, tokens.length);
-//        }
-//        Command command = commandManager.getCommandByName(commandName);
-//        if(command == null){
-//            serverConsole.log(Level.WARNING, "The command doesn't exist");
-//        }else{
-//            String response = command.execute(arguments);
-//            serverConsole.println(response);
-//        }
-//    }
 
-    public void closeApp(){
-        try {
-            colectionManager.saveRoutes();
-        }catch (IOException e){
-            serverConsole.log(Level.WARNING, "Collection can't be saved");
-        }
+    public void closeApp() {
     }
 
     /**

@@ -38,14 +38,6 @@ public class RemoveHead extends Command {
      */
     @Override
     public Response execute(String[] args) {
-        Response response;
-        if (colectionManager.getroutes().isEmpty()){
-            response = new Response(super.name, "Collection is empty");
-        } else{
-            Long id = (Long) colectionManager.getroutes().get(0).getId();
-            colectionManager.remove(colectionManager.getroutes().get(0).getId());
-            response = new Response(super.name, "Element with id:" + id.toString() + "was deleted");
-        }
-        return response;
+        return new Response("вы не можете удалять не ваши объекты");
     }
 }

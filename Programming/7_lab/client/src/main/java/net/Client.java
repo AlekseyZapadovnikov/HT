@@ -30,7 +30,9 @@ public class Client {
 
     private void doRequest(String line) throws IOException {
         try {
-            userRequest = Console.parseLine(line);
+            if (userRequest == null) {
+                userRequest = Console.parseLine(line);
+            }
             network.write(userRequest);
             Response serverResponse = (Response) network.read();
             while (serverResponse == null) {
@@ -96,11 +98,11 @@ public class Client {
 
             baseManager = new ClientsBaseManager(network, console);
             short counter = 0;
-            for (int i = 0; i < 5; i++){
+            for (int i = 0; i < 5; i++) {
                 boolean flag = baseManager.parseClientStatus(console.inputCheckIn());
-                if (flag){
+                if (flag) {
                     break;
-                } else if (counter++ > 3){
+                } else if (counter++ > 3) {
                     console.println("запрос на подключение отклонён");
                     System.exit(0);
                 }
@@ -112,7 +114,7 @@ public class Client {
                 if (line == null) {
                     continue;
                 }
-                userRequest = Console.parseLine(line);
+                userRequest = Console.parseLine(line);  //хз зачем это было, вроде как не надо этого
                 isRunning = consoleMode(userRequest.getCommand(), isRunning);
             }
             network.close();

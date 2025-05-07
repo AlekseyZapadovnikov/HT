@@ -26,7 +26,7 @@ public class Update extends Command {
     public Response execute(Object obj) {
         Route curRoute = (Route) obj;
         long id = curRoute.getId();
-        colectionManager.update(curRoute);
+        colectionManager.update(curRoute, id);
         return new Response(super.name, "collection was succsessfuly update");
     }
 }
