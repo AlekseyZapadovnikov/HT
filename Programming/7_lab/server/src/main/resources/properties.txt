@@ -5,6 +5,6 @@ se.ifmo.ru
 localhost
 pg
 5432
-ryoK>0048
+ваш_пароль_от_хелиоса
 studs
-YLWgJFnjrGGRO9rY
+пароль_от_бд
