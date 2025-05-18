@@ -1,0 +1,105 @@
+ORG 0x0
+V0: WORD $DEFAULT, 0x180
+V1: WORD $INT_1, 0x180
+V2: WORD $DEFAULT, 0x180
+V3: WORD $INT_3, 0x180
+V4: WORD $DEFAULT, 0x180
+V5: WORD $DEFAULT, 0x180
+V6: WORD $DEFAULT, 0x180
+V7: WORD $DEFAULT, 0x180
+
+DEFAULT: IRET
+
+INT_1:
+	DI
+	PUSH
+	CALL FUNC1
+	LD RES
+	OUT 2
+	POP
+	EI
+	IRET
+
+INT_3:
+	DI
+	PUSH
+	CALL FUNC2
+	POP
+	IRET
+	EI
+
+
+ORG 0x046
+X: WORD 0x0000
+CLEAN: WORD 0x00FF
+MAX: WORD 0x7F
+RES: WORD 0x0000
+
+START:
+	DI
+    	CLA
+    	OUT 0x1
+    	OUT 0x2 	; Запрет прерываний для неиспользуемых ВУ
+   	OUT 0x7
+    	OUT 0xB
+    	OUT 0xD
+    	OUT 0x11
+    	OUT 0x15
+    	OUT 0x19
+    	OUT 0x1D
+
+	LD #0x9 	     ; Загрузка в аккумулятор MR (1000|0001=1001)
+    	OUT 3 		; Разрешение прерываний для 1 ВУ
+    	LD #0xB  	; Загрузка в аккумулятор MR (1000|0011=1011)
+    	OUT 7 		; Разрешение прерываний для 3 ВУ
+
+    	EI
+	
+	
+MAIN_LOOP:
+	LD X
+	DEC
+	ST X
+	JUMP MAIN_LOOP
+
+FUNC1:
+	LD X
+	ASL
+	ASL
+	ADD #0x07
+	ST RES
+	BMI MINUS_V
+	JUMP PLUS_V
+RETURN:
+	ST RES
+	RET
+
+
+
+PLUS_V:
+	SUB #0x7F
+	BMI SET_MAX_VALUE
+	LD RES
+	JUMP RETURN
+
+
+MINUS_V:
+	ADD #0x7F
+	INC
+	BMI SET_MAX_VALUE
+	LD RES
+	JUMP RETURN
+
+SET_MAX_VALUE:
+	LD MAX
+	ST RES
+	JUMP RETURN
+
+FUNC2:
+	AND CLEAN
+	IN 6
+	OR X
+	NOT
+	AND CLEAN
+	ST X	;ОПАСНОЕ МЕСТО
+	RET
